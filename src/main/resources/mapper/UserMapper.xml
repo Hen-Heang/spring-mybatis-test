@@ -28,7 +28,6 @@
         <result property="createdAt" column="created_at"/>
     </resultMap>
 
-    <!-- SELECT LIST -->
     <select id="selectUserList" resultMap="UserMap">
         SELECT
             id,
@@ -39,6 +38,7 @@
         FROM users
         ORDER BY id DESC
     </select>
+
 
     <!-- SELECT BY ID -->
     <select id="selectUserById" parameterType="long" resultMap="UserMap">

@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 
 public class UserRequest {
+
     @NotBlank(message = "username is required")
     @Size(max = 100, message = "username must be at most 100 characters")
     private String username;

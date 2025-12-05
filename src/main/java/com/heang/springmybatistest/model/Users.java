@@ -19,6 +19,8 @@ public class Users {
 
     private String email;
 
+    private String status;
+
     private LocalDateTime createdAt;
 
 
