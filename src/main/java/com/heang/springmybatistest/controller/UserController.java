@@ -24,6 +24,7 @@ public class UserController {
             ) {
         userService.createuser(userRequest);
         return ApiResponse.success("User created successfully", null);
+
     }
 
 
