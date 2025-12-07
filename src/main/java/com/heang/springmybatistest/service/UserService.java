@@ -17,6 +17,7 @@ public interface UserService {
 
     UserResponse updateUser(Long id , UserUpdateRequest userUpdateRequest);
 
+
     UserResponse getUserById(Long id);
 
     void deleteUser(Long id);
