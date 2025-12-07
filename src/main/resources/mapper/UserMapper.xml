@@ -2,7 +2,6 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.heang.springmybatistest.mapper.UserMapper">
 
     <insert id="insertUser"
@@ -62,7 +61,8 @@
         WHERE id = #{id}
     </update>
 
-    <!-- DELETE -->
+
+<!--Delete User Service-->
     <delete id="deleteUser" parameterType="long">
         DELETE FROM users
         WHERE id = #{id}
