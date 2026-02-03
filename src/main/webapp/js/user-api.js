@@ -80,6 +80,7 @@ var UserAPI = {
         $.ajax({
             url: this.baseUrl,
             type: 'POST',
+
             contentType: 'application/json',    // Tell server we're sending JSON
             data: JSON.stringify(userData),      // Convert object to JSON string
             dataType: 'json',
