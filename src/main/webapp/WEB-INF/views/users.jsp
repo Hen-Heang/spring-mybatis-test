@@ -168,9 +168,7 @@
                 if (result.data && result.data.length > 0) {
                     renderUsersTable(result.data);
                 } else {
-                    $('#usersTableContainer').html(
-                        '<p class="muted">No users yet. Create your first user above!</p>'
-                    );
+                    renderUsersTable([]);  // Show table with "No Data" message
                 }
             },
             // Error callback
@@ -190,15 +188,20 @@
         html += '<thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Status</th></tr></thead>';
         html += '<tbody>';
 
-        // Loop through each user using jQuery.each
-        $.each(users, function(index, user) {
-            html += '<tr>';
-            html += '<td>' + user.id + '</td>';
-            html += '<td>' + UIHelper.escapeHtml(user.username) + '</td>';
-            html += '<td>' + UIHelper.escapeHtml(user.email) + '</td>';
-            html += '<td>' + UIHelper.getStatusBadge(user.status) + '</td>';
-            html += '</tr>';
-        });
+        // Check if users array is empty (데이터 없음 체크)
+        if (!users || users.length === 0) {
+            html += '<tr><td colspan="4" class="no-data">No Data (데이터가 없습니다)</td></tr>';
+        } else {
+            // Loop through each user using jQuery.each
+            $.each(users, function(index, user) {
+                html += '<tr>';
+                html += '<td>' + user.id + '</td>';
+                html += '<td>' + UIHelper.escapeHtml(user.username) + '</td>';
+                html += '<td>' + UIHelper.escapeHtml(user.email) + '</td>';
+                html += '<td>' + UIHelper.getStatusBadge(user.status) + '</td>';
+                html += '</tr>';
+            });
+        }
 
         html += '</tbody></table>';
         $container.html(html);
