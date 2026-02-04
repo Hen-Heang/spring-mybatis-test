@@ -1,6 +1,6 @@
 package com.heang.springmybatistest.controller;
 
-import com.heang.springmybatistest.common.ApiResponse;
+import com.heang.springmybatistest.common.api.ApiResponse;
 import com.heang.springmybatistest.dto.UserRequest;
 import com.heang.springmybatistest.dto.UserResponse;
 import com.heang.springmybatistest.dto.UserUpdateRequest;
@@ -25,7 +25,7 @@ public class UserController {
             ) {
 
         userService.createuser(userRequest);
-        return ApiResponse.success("User created successfully", null);
+        return ApiResponse.success(null);
     }
 
 //    Get All Users
@@ -58,6 +58,6 @@ public class UserController {
     ) {
 
      userService.deleteUser(id);
-        return ApiResponse.success("User deleted successfully", null);
+        return ApiResponse.success(null);
     }
 }

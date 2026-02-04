@@ -1,0 +1,31 @@
+package com.heang.springmybatistest.mapper;
+
+import com.heang.springmybatistest.dto.CategoryRequest;
+import com.heang.springmybatistest.model.Category;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+/**
+ * Category Mapper Interface
+ * Following User mapper pattern (User 매퍼 패턴 따름)
+ */
+@Mapper
+public interface CategoryMapper {
+
+    void insertCategory(CategoryRequest categoryRequest);
+
+    List<Category> selectCategoryList();
+
+    Category selectCategoryById(Long id);
+
+    Category selectCategoryByName(String name);
+
+    void updateCategory(@Param("id") Long id,
+                        @Param("req") CategoryRequest categoryRequest);
+
+    void deleteCategory(Long id);
+
+    int countCategory();
+}

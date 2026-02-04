@@ -18,6 +18,8 @@
 - [Getting Started](#-getting-started)
 - [Features](#-features)
 - [API Endpoints](#-api-endpoints)
+- [SQL Fundamentals Reference](#-sql-fundamentals-reference)
+- [MyBatis Dynamic SQL Reference](#-mybatis-dynamic-sql-reference)
 - [Learning Roadmap](#-learning-roadmap)
 - [Study Resources](#-study-resources)
 
@@ -223,6 +225,887 @@ GET /users
     ]
 }
 ```
+
+---
+
+## 📖 SQL Fundamentals Reference
+
+> Master SQL basics first, then Dynamic SQL becomes easy!
+
+### 🎯 SQL Statement Types
+
+| Type | Purpose | Example |
+|------|---------|---------|
+| **SELECT** | Read data | `SELECT * FROM users` |
+| **INSERT** | Create data | `INSERT INTO users VALUES (...)` |
+| **UPDATE** | Modify data | `UPDATE users SET name = 'new'` |
+| **DELETE** | Remove data | `DELETE FROM users WHERE id = 1` |
+
+---
+
+### 1️⃣ SELECT - Reading Data
+
+**Basic Structure:**
+```sql
+SELECT columns      -- What columns to get
+FROM table          -- From which table
+WHERE condition     -- Filter rows
+ORDER BY column     -- Sort results
+LIMIT number        -- Limit rows returned
+```
+
+**Examples:**
+```sql
+-- Get all columns, all rows
+SELECT * FROM users;
+
+-- Get specific columns
+SELECT id, username, email FROM users;
+
+-- Get with alias (rename column in result)
+SELECT username AS name, email AS mail FROM users;
+```
+
+**When to use SELECT:**
+- Display data on screen
+- Check if data exists
+- Get data for processing
+
+---
+
+### 2️⃣ WHERE - Filtering Data
+
+**Why use WHERE:**  
+Without WHERE, you get ALL rows. WHERE filters to get only what you need.
+
+**Comparison Operators:**
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `=` | Equal | `WHERE status = 'ACTIVE'` |
+| `!=` or `<>` | Not equal | `WHERE status != 'DELETED'` |
+| `>` | Greater than | `WHERE age > 18` |
+| `<` | Less than | `WHERE price < 100` |
+| `>=` | Greater or equal | `WHERE age >= 18` |
+| `<=` | Less or equal | `WHERE price <= 100` |
+
+**Examples:**
+```sql
+-- Exact match
+SELECT * FROM users WHERE status = 'ACTIVE';
+
+-- Multiple conditions with AND (both must be true)
+SELECT * FROM users WHERE status = 'ACTIVE' AND age >= 18;
+
+-- Multiple conditions with OR (either can be true)
+SELECT * FROM users WHERE status = 'ACTIVE' OR status = 'PENDING';
+
+-- Combine AND and OR (use parentheses!)
+SELECT * FROM users 
+WHERE status = 'ACTIVE' AND (age >= 18 OR role = 'ADMIN');
+```
+
+---
+
+### 3️⃣ LIKE - Pattern Matching
+
+**Why use LIKE:**  
+When you need partial matching (search), not exact match.
+
+**Wildcards:**
+| Wildcard | Meaning | Example |
+|----------|---------|---------|
+| `%` | Any characters (0 or more) | `'%john%'` matches "john", "johnny", "big john" |
+| `_` | Exactly one character | `'j_hn'` matches "john", "jahn" |
+
+**Examples:**
+```sql
+-- Starts with 'john'
+SELECT * FROM users WHERE username LIKE 'john%';
+-- Matches: john, johnny, john_doe
+
+-- Ends with '@gmail.com'
+SELECT * FROM users WHERE email LIKE '%@gmail.com';
+-- Matches: test@gmail.com, user@gmail.com
+
+-- Contains 'admin'
+SELECT * FROM users WHERE username LIKE '%admin%';
+-- Matches: admin, superadmin, admin123
+
+-- Exactly 4 characters starting with 'j'
+SELECT * FROM users WHERE username LIKE 'j___';
+-- Matches: john, jack, jane
+```
+
+**When to use LIKE:**
+- Search functionality
+- Email domain filtering
+- Username pattern matching
+
+---
+
+### 4️⃣ IN - Multiple Values
+
+**Why use IN:**  
+Cleaner than multiple OR conditions.
+
+```sql
+-- Instead of this (ugly):
+SELECT * FROM users 
+WHERE status = 'ACTIVE' OR status = 'PENDING' OR status = 'REVIEW';
+
+-- Use IN (clean):
+SELECT * FROM users 
+WHERE status IN ('ACTIVE', 'PENDING', 'REVIEW');
+```
+
+**More Examples:**
+```sql
+-- Find users by multiple IDs
+SELECT * FROM users WHERE id IN (1, 2, 3, 4, 5);
+
+-- NOT IN - exclude these values
+SELECT * FROM users WHERE status NOT IN ('DELETED', 'BANNED');
+```
+
+**When to use IN:**
+- Filter by list of IDs
+- Filter by multiple status values
+- When you have 3+ OR conditions for same column
+
+---
+
+### 5️⃣ BETWEEN - Range
+
+**Why use BETWEEN:**  
+Cleaner for range conditions.
+
+```sql
+-- Instead of this:
+SELECT * FROM users WHERE age >= 18 AND age <= 30;
+
+-- Use BETWEEN:
+SELECT * FROM users WHERE age BETWEEN 18 AND 30;
+```
+
+**Date Range Example:**
+```sql
+-- Users created in 2024
+SELECT * FROM users 
+WHERE created_at BETWEEN '2024-01-01' AND '2024-12-31';
+```
+
+**When to use BETWEEN:**
+- Age ranges
+- Date ranges
+- Price ranges
+
+---
+
+### 6️⃣ ORDER BY - Sorting
+
+**Why use ORDER BY:**  
+Control the order of results (newest first, alphabetical, etc.)
+
+**Direction:**
+| Direction | Meaning | Example |
+|-----------|---------|---------|
+| `ASC` | Ascending (A→Z, 1→9) | Default |
+| `DESC` | Descending (Z→A, 9→1) | Newest first |
+
+**Examples:**
+```sql
+-- Sort by username A-Z
+SELECT * FROM users ORDER BY username ASC;
+
+-- Sort by created date (newest first)
+SELECT * FROM users ORDER BY created_at DESC;
+
+-- Multiple sort columns
+SELECT * FROM users ORDER BY status ASC, created_at DESC;
+-- First sorts by status, then by date within each status
+```
+
+**When to use ORDER BY:**
+- Show newest items first
+- Alphabetical listing
+- Ranking/leaderboard
+
+---
+
+### 7️⃣ LIMIT & OFFSET - Pagination
+
+**Why use LIMIT/OFFSET:**  
+Don't load all 10,000 rows at once! Load page by page.
+
+```sql
+-- Get first 10 rows
+SELECT * FROM users LIMIT 10;
+
+-- Get rows 11-20 (page 2, 10 per page)
+SELECT * FROM users LIMIT 10 OFFSET 10;
+
+-- Get rows 21-30 (page 3)
+SELECT * FROM users LIMIT 10 OFFSET 20;
+```
+
+**Pagination Formula:**
+```
+OFFSET = (page_number - 1) * page_size
+
+Page 1: LIMIT 10 OFFSET 0   (rows 1-10)
+Page 2: LIMIT 10 OFFSET 10  (rows 11-20)
+Page 3: LIMIT 10 OFFSET 20  (rows 21-30)
+```
+
+**When to use LIMIT/OFFSET:**
+- Pagination (page 1, 2, 3...)
+- "Load more" button
+- Top N results (Top 10 users)
+
+---
+
+### 8️⃣ INSERT - Creating Data
+
+**Basic Structure:**
+```sql
+INSERT INTO table (column1, column2, column3)
+VALUES (value1, value2, value3);
+```
+
+**Examples:**
+```sql
+-- Insert single row
+INSERT INTO users (username, email, status)
+VALUES ('john', 'john@test.com', 'ACTIVE');
+
+-- Insert multiple rows (batch insert)
+INSERT INTO users (username, email, status)
+VALUES 
+    ('user1', 'user1@test.com', 'ACTIVE'),
+    ('user2', 'user2@test.com', 'ACTIVE'),
+    ('user3', 'user3@test.com', 'PENDING');
+```
+
+**When to use INSERT:**
+- User registration
+- Creating new records
+- Bulk data import
+
+---
+
+### 9️⃣ UPDATE - Modifying Data
+
+**Basic Structure:**
+```sql
+UPDATE table
+SET column1 = value1, column2 = value2
+WHERE condition;
+```
+
+**⚠️ ALWAYS use WHERE with UPDATE!** Without WHERE, ALL rows get updated!
+
+**Examples:**
+```sql
+-- Update single field
+UPDATE users SET status = 'INACTIVE' WHERE id = 1;
+
+-- Update multiple fields
+UPDATE users 
+SET username = 'new_name', email = 'new@test.com'
+WHERE id = 1;
+
+-- Update multiple rows
+UPDATE users SET status = 'INACTIVE' WHERE status = 'PENDING';
+
+-- ❌ DANGEROUS - updates ALL rows!
+UPDATE users SET status = 'DELETED';  -- Don't do this!
+```
+
+**When to use UPDATE:**
+- Edit user profile
+- Change status
+- Bulk status change
+
+---
+
+### 🔟 DELETE - Removing Data
+
+**Basic Structure:**
+```sql
+DELETE FROM table WHERE condition;
+```
+
+**⚠️ ALWAYS use WHERE with DELETE!** Without WHERE, ALL rows get deleted!
+
+**Examples:**
+```sql
+-- Delete single row
+DELETE FROM users WHERE id = 1;
+
+-- Delete multiple rows
+DELETE FROM users WHERE status = 'DELETED';
+
+-- Delete by list of IDs
+DELETE FROM users WHERE id IN (1, 2, 3);
+
+-- ❌ DANGEROUS - deletes ALL rows!
+DELETE FROM users;  -- Don't do this!
+```
+
+**When to use DELETE:**
+- Remove user account
+- Clean up old data
+- Remove invalid records
+
+---
+
+### 📊 JOIN - Combining Tables
+
+**Why use JOIN:**  
+Get data from multiple related tables.
+
+**Example Tables:**
+```
+users table:          orders table:
++----+----------+     +----+---------+--------+
+| id | username |     | id | user_id | amount |
++----+----------+     +----+---------+--------+
+| 1  | john     |     | 1  | 1       | 100    |
+| 2  | jane     |     | 2  | 1       | 200    |
++----+----------+     | 3  | 2       | 150    |
+                      +----+---------+--------+
+```
+
+**INNER JOIN - Only matching rows:**
+```sql
+SELECT users.username, orders.amount
+FROM users
+INNER JOIN orders ON users.id = orders.user_id;
+
+-- Result: john-100, john-200, jane-150
+```
+
+**LEFT JOIN - All from left table + matching from right:**
+```sql
+SELECT users.username, orders.amount
+FROM users
+LEFT JOIN orders ON users.id = orders.user_id;
+
+-- If user has no orders, amount will be NULL
+```
+
+**When to use JOIN:**
+- User with their orders
+- Product with category name
+- Any related data from multiple tables
+
+---
+
+### 📈 Aggregate Functions
+
+**Why use Aggregates:**  
+Calculate summaries (count, total, average).
+
+| Function | Purpose | Example |
+|----------|---------|---------|
+| `COUNT()` | Count rows | `COUNT(*)` |
+| `SUM()` | Total | `SUM(amount)` |
+| `AVG()` | Average | `AVG(price)` |
+| `MAX()` | Maximum | `MAX(salary)` |
+| `MIN()` | Minimum | `MIN(age)` |
+
+**Examples:**
+```sql
+-- Count all users
+SELECT COUNT(*) FROM users;
+
+-- Count active users
+SELECT COUNT(*) FROM users WHERE status = 'ACTIVE';
+
+-- Sum of all order amounts
+SELECT SUM(amount) FROM orders;
+
+-- Average order amount
+SELECT AVG(amount) FROM orders;
+```
+
+---
+
+### 📊 GROUP BY - Grouping Results
+
+**Why use GROUP BY:**  
+Get aggregates per group (count per status, sum per user).
+
+```sql
+-- Count users by status
+SELECT status, COUNT(*) as count
+FROM users
+GROUP BY status;
+
+-- Result:
+-- ACTIVE   | 50
+-- INACTIVE | 20
+-- PENDING  | 10
+```
+
+**With HAVING (filter groups):**
+```sql
+-- Statuses with more than 10 users
+SELECT status, COUNT(*) as count
+FROM users
+GROUP BY status
+HAVING COUNT(*) > 10;
+```
+
+**WHERE vs HAVING:**
+- `WHERE` - filters rows BEFORE grouping
+- `HAVING` - filters groups AFTER grouping
+
+---
+
+### 🔄 Complete Query Order
+
+```sql
+SELECT columns                    -- 5. What to show
+FROM table                        -- 1. Which table
+JOIN other_table ON condition     -- 2. Combine tables
+WHERE condition                   -- 3. Filter rows
+GROUP BY column                   -- 4. Group rows
+HAVING condition                  -- 6. Filter groups
+ORDER BY column                   -- 7. Sort results
+LIMIT number OFFSET number        -- 8. Pagination
+```
+
+**Execution Order (how database processes):**
+1. FROM / JOIN
+2. WHERE
+3. GROUP BY
+4. HAVING
+5. SELECT
+6. ORDER BY
+7. LIMIT / OFFSET
+
+---
+
+### 📋 SQL Cheat Sheet
+
+```sql
+-- 🔍 SELECT (Read)
+SELECT * FROM users;
+SELECT id, name FROM users WHERE status = 'ACTIVE';
+SELECT * FROM users WHERE name LIKE '%john%';
+SELECT * FROM users WHERE id IN (1, 2, 3);
+SELECT * FROM users WHERE age BETWEEN 18 AND 30;
+SELECT * FROM users ORDER BY created_at DESC;
+SELECT * FROM users LIMIT 10 OFFSET 20;
+
+-- ➕ INSERT (Create)
+INSERT INTO users (name, email) VALUES ('john', 'j@test.com');
+
+-- ✏️ UPDATE (Modify) - Always use WHERE!
+UPDATE users SET status = 'INACTIVE' WHERE id = 1;
+
+-- ❌ DELETE (Remove) - Always use WHERE!
+DELETE FROM users WHERE id = 1;
+
+-- 📊 Aggregates
+SELECT COUNT(*) FROM users;
+SELECT status, COUNT(*) FROM users GROUP BY status;
+
+-- 🔗 JOIN
+SELECT u.name, o.amount 
+FROM users u 
+JOIN orders o ON u.id = o.user_id;
+```
+
+---
+
+## 🔥 MyBatis Dynamic SQL Reference
+
+> Quick reference for all Dynamic SQL features - copy & use!
+
+### Overview Table
+
+| Tag | Purpose | When to Use |
+|-----|---------|-------------|
+| `<if>` | Conditional SQL | Optional WHERE conditions |
+| `<choose><when><otherwise>` | Switch logic | Mutually exclusive conditions |
+| `<where>` | Smart WHERE | Auto-handle AND/OR prefix |
+| `<set>` | Smart SET | Dynamic UPDATE fields |
+| `<foreach>` | Loop | IN clause, batch operations |
+| `<trim>` | Custom trimming | Advanced prefix/suffix control |
+| `<sql>` + `<include>` | Reusable | Shared column lists |
+| `<bind>` | Variables | LIKE patterns |
+
+---
+
+### 1️⃣ `<if>` - Conditional Filter
+
+**Use Case:** Add WHERE condition only if value exists
+
+```xml
+<select id="searchUsers" resultMap="UserMap">
+    SELECT * FROM users
+    <where>
+        <if test="username != null and username != ''">
+            AND username = #{username}
+        </if>
+        <if test="email != null and email != ''">
+            AND email = #{email}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+    </where>
+</select>
+```
+
+**Generated SQL (if username="john", email=null, status="ACTIVE"):**
+```sql
+SELECT * FROM users WHERE username = 'john' AND status = 'ACTIVE'
+```
+
+**Key Points:**
+- `<where>` automatically removes leading `AND`/`OR`
+- Only adds `WHERE` if at least one condition is true
+- Use `and` for null check: `test="value != null and value != ''"`
+
+---
+
+### 2️⃣ `<choose><when><otherwise>` - Switch Logic
+
+**Use Case:** Only ONE condition should apply (mutually exclusive)
+
+```xml
+<select id="findUsers" resultMap="UserMap">
+    SELECT * FROM users
+    WHERE status =
+    <choose>
+        <when test="status == 'ACTIVE'">
+            'ACTIVE'
+        </when>
+        <when test="status == 'INACTIVE'">
+            'INACTIVE'
+        </when>
+        <otherwise>
+            'PENDING'
+        </otherwise>
+    </choose>
+</select>
+```
+
+**Common Pattern - Dynamic ORDER BY:**
+```xml
+ORDER BY
+<choose>
+    <when test="sortBy == 'username'">username</when>
+    <when test="sortBy == 'email'">email</when>
+    <when test="sortBy == 'createdAt'">created_at</when>
+    <otherwise>id</otherwise>
+</choose>
+<choose>
+    <when test="sortOrder == 'ASC'">ASC</when>
+    <otherwise>DESC</otherwise>
+</choose>
+```
+
+---
+
+### 3️⃣ `<foreach>` - Loop Collections
+
+**Use Case 1: IN Clause**
+```xml
+<select id="findByIds" resultMap="UserMap">
+    SELECT * FROM users
+    WHERE id IN
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+        #{id}
+    </foreach>
+</select>
+```
+
+**Generated SQL:** `SELECT * FROM users WHERE id IN (1, 2, 3, 4, 5)`
+
+**Use Case 2: Batch INSERT**
+```xml
+<insert id="batchInsert">
+    INSERT INTO users (username, email, status)
+    VALUES
+    <foreach collection="users" item="user" separator=",">
+        (#{user.username}, #{user.email}, #{user.status})
+    </foreach>
+</insert>
+```
+
+**Generated SQL:**
+```sql
+INSERT INTO users (username, email, status)
+VALUES ('user1', 'a@test.com', 'ACTIVE'),
+       ('user2', 'b@test.com', 'ACTIVE'),
+       ('user3', 'c@test.com', 'INACTIVE')
+```
+
+**Use Case 3: Batch UPDATE**
+```xml
+<update id="batchUpdateStatus">
+    UPDATE users
+    SET status = #{status}
+    WHERE id IN
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+        #{id}
+    </foreach>
+</update>
+```
+
+**Use Case 4: Batch DELETE**
+```xml
+<delete id="batchDelete">
+    DELETE FROM users
+    WHERE id IN
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+        #{id}
+    </foreach>
+</delete>
+```
+
+**`<foreach>` Attributes:**
+| Attribute | Description | Example |
+|-----------|-------------|---------|
+| `collection` | Parameter name | `"ids"`, `"users"`, `"list"` |
+| `item` | Current element variable | `"id"`, `"user"` |
+| `index` | Current index (optional) | `"idx"` |
+| `open` | Opening character | `"("` |
+| `close` | Closing character | `")"` |
+| `separator` | Between elements | `","` |
+
+---
+
+### 4️⃣ `<set>` - Dynamic UPDATE
+
+**Use Case:** Update only non-null fields
+
+```xml
+<update id="dynamicUpdate">
+    UPDATE users
+    <set>
+        <if test="username != null and username != ''">
+            username = #{username},
+        </if>
+        <if test="email != null and email != ''">
+            email = #{email},
+        </if>
+        <if test="status != null">
+            status = #{status},
+        </if>
+    </set>
+    WHERE id = #{id}
+</update>
+```
+
+**If username="john", email=null, status="ACTIVE":**
+```sql
+UPDATE users SET username = 'john', status = 'ACTIVE' WHERE id = 1
+```
+
+**Key Points:**
+- `<set>` automatically removes trailing commas
+- Only adds `SET` if at least one field is present
+
+---
+
+### 5️⃣ `<trim>` - Custom Trimming
+
+**Use Case:** More control than `<where>` or `<set>`
+
+**Alternative to `<where>`:**
+```xml
+<trim prefix="WHERE" prefixOverrides="AND |OR ">
+    <if test="username != null">
+        AND username = #{username}
+    </if>
+    <if test="email != null">
+        AND email = #{email}
+    </if>
+</trim>
+```
+
+**Alternative to `<set>`:**
+```xml
+<trim prefix="SET" suffixOverrides=",">
+    <if test="username != null">
+        username = #{username},
+    </if>
+    <if test="email != null">
+        email = #{email},
+    </if>
+</trim>
+```
+
+**`<trim>` Attributes:**
+| Attribute | Description |
+|-----------|-------------|
+| `prefix` | Add at beginning if content exists |
+| `suffix` | Add at end if content exists |
+| `prefixOverrides` | Remove from beginning (pipe `\|` separated) |
+| `suffixOverrides` | Remove from end |
+
+---
+
+### 6️⃣ `<sql>` + `<include>` - Reusable Fragments
+
+**Use Case:** Avoid repeating column lists
+
+```xml
+<!-- Define reusable fragment -->
+<sql id="userColumns">
+    id, username, email, status, created_at
+</sql>
+
+<sql id="activeCondition">
+    AND status = 'ACTIVE'
+</sql>
+
+<!-- Use fragment -->
+<select id="findAll" resultMap="UserMap">
+    SELECT <include refid="userColumns"/>
+    FROM users
+    ORDER BY id DESC
+</select>
+
+<select id="findActiveUsers" resultMap="UserMap">
+    SELECT <include refid="userColumns"/>
+    FROM users
+    WHERE 1=1
+    <include refid="activeCondition"/>
+</select>
+```
+
+---
+
+### 7️⃣ `<bind>` - Create Variables
+
+**Use Case:** LIKE patterns, computed values
+
+```xml
+<select id="searchByKeyword" resultMap="UserMap">
+    <bind name="pattern" value="'%' + keyword + '%'"/>
+    
+    SELECT * FROM users
+    WHERE username LIKE #{pattern}
+       OR email LIKE #{pattern}
+</select>
+```
+
+**Alternative (without bind):**
+```xml
+WHERE username LIKE CONCAT('%', #{keyword}, '%')
+```
+
+---
+
+### 📋 Complete Example - Advanced Search
+
+```xml
+<select id="advancedSearch" resultMap="UserMap">
+    SELECT <include refid="userColumns"/>
+    FROM users
+    <where>
+        <!-- Simple conditions -->
+        <if test="username != null and username != ''">
+            AND username LIKE CONCAT('%', #{username}, '%')
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        
+        <!-- Date range -->
+        <if test="startDate != null">
+            AND created_at &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND created_at &lt;= #{endDate}
+        </if>
+        
+        <!-- Multiple values (IN clause) -->
+        <if test="ids != null and ids.size() > 0">
+            AND id IN
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        
+        <if test="statuses != null and statuses.size() > 0">
+            AND status IN
+            <foreach collection="statuses" item="st" open="(" close=")" separator=",">
+                #{st}
+            </foreach>
+        </if>
+    </where>
+    
+    <!-- Dynamic sorting -->
+    ORDER BY
+    <choose>
+        <when test="sortBy == 'username'">username</when>
+        <when test="sortBy == 'email'">email</when>
+        <otherwise>id</otherwise>
+    </choose>
+    <choose>
+        <when test="sortOrder == 'ASC'">ASC</when>
+        <otherwise>DESC</otherwise>
+    </choose>
+    
+    <!-- Pagination -->
+    <if test="size != null and offset != null">
+        LIMIT #{size} OFFSET #{offset}
+    </if>
+</select>
+```
+
+---
+
+### ⚠️ Special Characters in XML
+
+| Character | XML Escape | Description |
+|-----------|------------|-------------|
+| `<` | `&lt;` | Less than |
+| `>` | `&gt;` | Greater than |
+| `&` | `&amp;` | Ampersand |
+| `"` | `&quot;` | Double quote |
+| `'` | `&apos;` | Single quote |
+
+**Example:**
+```xml
+<!-- Wrong -->
+<if test="age < 18">
+
+<!-- Correct -->
+<if test="age &lt; 18">
+```
+
+---
+
+### 🔧 Enable SQL Logging
+
+Add to `application.properties`:
+```properties
+# Show SQL statements
+logging.level.com.heang.springmybatistest.mapper=DEBUG
+
+# Show SQL with parameter values
+mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
+```
+
+---
+
+### 📁 Practice Files
+
+| File | Description |
+|------|-------------|
+| `mapper/DynamicSqlPracticeMapper.xml` | All examples with comments |
+| `mapper/DynamicSqlPracticeMapper.java` | Mapper interface |
+| `service/DynamicSqlPracticeServiceImpl.java` | Service with explanations |
+| `controller/DynamicSqlPracticeController.java` | REST endpoints to test |
+| `dto/UserSearchRequest.java` | Search request DTO |
 
 ---
 
