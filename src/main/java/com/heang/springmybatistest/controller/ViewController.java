@@ -11,6 +11,11 @@ public class ViewController {
         return "users";
     }
 
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "dashboard";
+    }
+
     @GetMapping("/user-list")
     public String userList() {
         return "user-list";

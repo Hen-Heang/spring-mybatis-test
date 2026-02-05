@@ -4,49 +4,56 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heang.springmybatistest.mapper.UserMapper">
 
+    <!-- ===================================
+         Common Result Map (공통 결과 매핑)
+         =================================== -->
+    <resultMap id="UserMap" type="com.heang.springmybatistest.model.Users">
+        <id     property="id"        column="id"/>
+        <result property="username"  column="username"/>
+        <result property="email"     column="email"/>
+        <result property="password"  column="password"/>
+        <result property="name"      column="name"/>
+        <result property="phone"     column="phone"/>
+        <result property="role"      column="role"/>
+        <result property="status"    column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- ===================================
+         기존 CRUD 쿼리
+         =================================== -->
+
+    <!-- INSERT (기존) -->
     <insert id="insertUser"
             parameterType="com.heang.springmybatistest.dto.UserRequest">
         INSERT INTO users (
             username,
             email,
+            password,
+            role,
             status
         ) VALUES (
-                     #{username},
-                     #{email},
-                     COALESCE(#{status}, 'ACTIVE')
-                 )
+            #{username},
+            #{email},
+            #{password},
+            COALESCE(#{role}, 'ROLE_USER'),
+            COALESCE(#{status}, 'ACTIVE')
+        )
     </insert>
 
-
-    <!-- Common column mapping -->
-    <resultMap id="UserMap" type="com.heang.springmybatistest.model.Users">
-        <id     property="id"        column="id"/>
-        <result property="username"  column="username"/>
-        <result property="email"     column="email"/>
-        <result property="status"    column="status"/>
-        <result property="createdAt" column="created_at"/>
-    </resultMap>
-
+    <!-- SELECT ALL -->
     <select id="selectUserList" resultMap="UserMap">
         SELECT
-            id,
-            username,
-            email,
-            status,
-            created_at
+            id, username, email, password, name, phone, role, status, created_at, updated_at
         FROM users
         ORDER BY id DESC
     </select>
 
-
     <!-- SELECT BY ID -->
     <select id="selectUserById" parameterType="long" resultMap="UserMap">
         SELECT
-            id,
-            username,
-            email,
-            status,
-            created_at
+            id, username, email, password, name, phone, role, status, created_at, updated_at
         FROM users
         WHERE id = #{id}
     </select>
@@ -57,15 +64,75 @@
         SET
             username = #{req.username},
             email    = #{req.email},
-            status   = COALESCE(#{req.status}, status)
+            status   = COALESCE(#{req.status}, status),
+            updated_at = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>
 
-
-<!--Delete User Service-->
+    <!-- DELETE -->
     <delete id="deleteUser" parameterType="long">
         DELETE FROM users
         WHERE id = #{id}
     </delete>
+
+    <!-- ===================================
+         Spring Security 관련 쿼리
+         =================================== -->
+
+    <!-- 사용자명으로 조회 (로그인용) -->
+    <select id="selectUserByUsername" parameterType="string" resultMap="UserMap">
+        SELECT
+            id, username, email, password, name, phone, role, status, created_at, updated_at
+        FROM users
+        WHERE username = #{username}
+    </select>
+
+    <!-- 이메일로 조회 -->
+    <select id="selectUserByEmail" parameterType="string" resultMap="UserMap">
+        SELECT
+            id, username, email, password, name, phone, role, status, created_at, updated_at
+        FROM users
+        WHERE email = #{email}
+    </select>
+
+    <!-- 사용자명 중복 확인 -->
+    <select id="countByUsername" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM users WHERE username = #{username}
+    </select>
+
+    <!-- 이메일 중복 확인 -->
+    <select id="countByEmail" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM users WHERE email = #{email}
+    </select>
+
+    <!-- 회원가입 (비밀번호 포함) -->
+    <insert id="insertUserWithPassword" parameterType="com.heang.springmybatistest.model.Users"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (
+            username, email, password, name, phone, role, status
+        ) VALUES (
+            #{username},
+            #{email},
+            #{password},
+            #{name},
+            #{phone},
+            COALESCE(#{role}, 'ROLE_USER'),
+            COALESCE(#{status}, 'ACTIVE')
+        )
+    </insert>
+
+    <!-- 비밀번호 변경 -->
+    <update id="updatePassword">
+        UPDATE users
+        SET password = #{password}, updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <!-- 마지막 로그인 시간 업데이트 -->
+    <update id="updateLastLogin" parameterType="long">
+        UPDATE users
+        SET updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
 
 </mapper>

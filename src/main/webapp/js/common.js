@@ -378,3 +378,63 @@ function getSelectedIds(checkboxClass) {
 
 // Example: var selectedIds = getSelectedIds('user-checkbox');
 // Result: [1, 3, 5]
+
+
+/* ============================================
+   9. NAVIGATION (네비게이션)
+   ============================================ */
+
+// Navigation links configuration (네비게이션 링크 설정)
+var NAV_LINKS = [
+    { url: '/dashboard', label: 'Dashboard', icon: '📊' },
+    { url: '/store/category', label: 'Category', icon: '📁' },
+    { url: '/store/product', label: 'Product', icon: '📦' },
+    { url: '/', label: 'Users', icon: '👥' }
+];
+
+// Initialize navigation (네비게이션 초기화)
+function initNavigation(containerId, activePage) {
+    var $container = $(containerId || '#navigation');
+    var currentPath = window.location.pathname;
+
+    var html = '<nav class="nav">';
+
+    NAV_LINKS.foracEh(function(link) {
+        var isActive = (activePage && currentPath.includes(activePage)) ||
+                       currentPath === link.url ||
+                       (link.url !== '/' && currentPath.startsWith(link.url));
+
+        var activeClass = isActive ? 'active' : '';
+        html += '<a href="' + link.url + '" class="nav-link ' + activeClass + '">';
+        html += link.icon + ' ' + link.label;
+        html += '</a>';
+    });
+
+    html += '</nav>';
+    $container.html(html);
+}
+
+// Go to page (페이지 이동)
+function goToPage(url) {
+    window.location.href = url;
+}
+
+// Go to category page (카테고리 페이지로 이동)
+function goToCategory() {
+    goToPage('/store/category');
+}
+
+// Go to product page (상품 페이지로 이동)
+function goToProduct() {
+    goToPage('/store/product');
+}
+
+// Go to users page (사용자 페이지로 이동)
+function goToUsers() {
+    goToPage('/');
+}
+
+// Go to dashboard (대시보드로 이동)
+function goToDashboard() {
+    goToPage('/dashboard');
+}

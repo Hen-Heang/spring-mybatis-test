@@ -15,8 +15,11 @@
         <header class="header">
             <h1>🏪 Store Admin</h1>
             <nav class="nav">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
                 <a href="/store/category" class="nav-link active">Category</a>
                 <a href="/store/product" class="nav-link">Product</a>
+                <a href="/" class="nav-link">Users</a>
+                <a href="/auth/logout" class="btn-logout" style="padding: 8px 16px; background: #e74c3c; color: #fff; border: none; border-radius: 4px; text-decoration: none;">로그아웃</a>
             </nav>
         </header>
 

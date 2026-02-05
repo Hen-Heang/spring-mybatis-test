@@ -25,9 +25,10 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,                    -- Auto-increment PK (자동 증가)
     username VARCHAR(50) NOT NULL UNIQUE,     -- Username, required, unique (필수, 고유)
     email VARCHAR(100) NOT NULL UNIQUE,       -- Email, required, unique (필수, 고유)
-    password VARCHAR(255) NOT NULL,           -- Password, required (필수)
+    password VARCHAR(255) NOT NULL,           -- Password (BCrypt encrypted), required (필수)
     name VARCHAR(100),                        -- Full name (이름)
     phone VARCHAR(20),                        -- Phone number (전화번호)
+    role VARCHAR(20) DEFAULT 'ROLE_USER',     -- Role: ROLE_USER, ROLE_ADMIN (권한)
     status VARCHAR(20) DEFAULT 'ACTIVE',      -- Status: ACTIVE, INACTIVE, SUSPENDED (상태)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Created timestamp (생성일시)
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP   -- Updated timestamp (수정일시)
@@ -35,15 +36,17 @@ CREATE TABLE users (
 
 -- Explanation (설명):
 -- UNIQUE: No duplicate values allowed (중복 불가)
+-- role: User role for Spring Security (사용자 권한)
 -- status: User account status (사용자 계정 상태)
 
 COMMENT ON TABLE users IS 'User table (사용자 테이블)';
 COMMENT ON COLUMN users.id IS 'User ID (PK)';
 COMMENT ON COLUMN users.username IS 'Username for login (로그인 아이디)';
 COMMENT ON COLUMN users.email IS 'Email address (이메일)';
-COMMENT ON COLUMN users.password IS 'Password (비밀번호)';
+COMMENT ON COLUMN users.password IS 'Password - BCrypt encrypted (비밀번호 - BCrypt 암호화)';
 COMMENT ON COLUMN users.name IS 'Full name (이름)';
 COMMENT ON COLUMN users.phone IS 'Phone number (전화번호)';
+COMMENT ON COLUMN users.role IS 'User role: ROLE_USER, ROLE_ADMIN (사용자 권한)';
 COMMENT ON COLUMN users.status IS 'Account status: ACTIVE, INACTIVE, SUSPENDED (계정 상태)';
 COMMENT ON COLUMN users.created_at IS 'Created timestamp (생성일시)';
 COMMENT ON COLUMN users.updated_at IS 'Updated timestamp (수정일시)';
@@ -164,10 +167,27 @@ INSERT INTO product (name, price, stock, category_id) VALUES ('Database Fundamen
 INSERT INTO product (name, price, stock, category_id) VALUES ('Limited Edition Laptop', 2500000, 3, 1);
 INSERT INTO product (name, price, stock, category_id) VALUES ('Almost Sold Out T-Shirt', 35000, 5, 2);
 
--- Sample users data (샘플 사용자 데이터)
-INSERT INTO users (username, email, password, name, phone, status) VALUES ('johndoe', 'john@example.com', 'password123', 'John Doe', '010-1234-5678', 'ACTIVE');
-INSERT INTO users (username, email, password, name, phone, status) VALUES ('janedoe', 'jane@example.com', 'password123', 'Jane Doe', '010-9876-5432', 'ACTIVE');
-INSERT INTO users (username, email, password, name, phone, status) VALUES ('admin', 'admin@example.com', 'adminpass', 'Admin User', 'admin', 'ACTIVE');
+-- =====================================================
+-- Sample Users Data with BCrypt Passwords (Spring Security용)
+-- BCrypt 암호화된 비밀번호를 사용한 샘플 사용자 데이터
+-- =====================================================
+-- Password for all users: password123
+-- BCrypt hash: $2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0KdPBLBqZQKZhZz5KqpYN.
+
+-- Admin user (관리자)
+INSERT INTO users (username, email, password, name, phone, role, status)
+VALUES ('admin', 'admin@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0KdPBLBqZQKZhZz5KqpYN.', 'Admin User', '010-0000-0000', 'ROLE_ADMIN', 'ACTIVE');
+
+-- Normal users (일반 사용자)
+INSERT INTO users (username, email, password, name, phone, role, status)
+VALUES ('johndoe', 'john@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0KdPBLBqZQKZhZz5KqpYN.', 'John Doe', '010-1234-5678', 'ROLE_USER', 'ACTIVE');
+
+INSERT INTO users (username, email, password, name, phone, role, status)
+VALUES ('janedoe', 'jane@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0KdPBLBqZQKZhZz5KqpYN.', 'Jane Doe', '010-9876-5432', 'ROLE_USER', 'ACTIVE');
+
+-- Inactive user for testing (비활성 사용자 - 테스트용)
+INSERT INTO users (username, email, password, name, phone, role, status)
+VALUES ('inactive_user', 'inactive@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0KdPBLBqZQKZhZz5KqpYN.', 'Inactive User', '010-1111-1111', 'ROLE_USER', 'INACTIVE');
 
 -- =====================================================
 -- 7. Verification Queries (데이터 확인 쿼리)

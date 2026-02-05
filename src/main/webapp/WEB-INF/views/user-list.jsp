@@ -5,9 +5,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>All Users</title>
+    <title>All Users - Store Admin</title>
 
     <!-- External CSS -->
+    <link rel="stylesheet" href="/css/admin.css" />
     <link rel="stylesheet" href="/css/style.css" />
 
     <!-- jQuery CDN (Required for AJAX) -->
@@ -16,13 +17,24 @@
 <body>
 
 <div class="container">
-    <!-- Page Header -->
-    <h1>
-        All Users (사용자 목록)
-        <div class="header-actions">
-            <a href="/" class="btn btn-success">+ Create New User</a>
+    <!-- Header with Navigation -->
+    <header class="header">
+        <h1>🏪 Store Admin</h1>
+        <nav class="nav">
+            <a href="/dashboard" class="nav-link">Dashboard</a>
+            <a href="/store/category" class="nav-link">Category</a>
+            <a href="/store/product" class="nav-link">Product</a>
+            <a href="/" class="nav-link active">Users</a>
+            <a href="/auth/logout" style="padding: 8px 16px; background: #e74c3c; color: #fff; border: none; border-radius: 4px; text-decoration: none;">로그아웃</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="page-header">
+            <h2>All Users (사용자 목록)</h2>
+            <a href="/" class="btn btn-primary">+ Create New User</a>
         </div>
-    </h1>
 
     <!-- Statistics Cards (통계 카드) -->
     <div class="stats">
@@ -386,5 +398,7 @@
     });
 </script>
 
+    </main>
+</div>
 </body>
 </html>

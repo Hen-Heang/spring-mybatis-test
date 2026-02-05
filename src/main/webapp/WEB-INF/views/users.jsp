@@ -5,9 +5,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create User</title>
+    <title>User Management - Store Admin</title>
 
     <!-- External CSS -->
+    <link rel="stylesheet" href="/css/admin.css" />
     <link rel="stylesheet" href="/css/style.css" />
 
     <!-- jQuery CDN (Required for AJAX) -->
@@ -16,13 +17,24 @@
 <body>
 
 <div class="container">
-    <!-- Page Header -->
-    <h1>
-        Create User (사용자 생성)
-        <div class="header-actions">
-            <a href="/user-list" class="btn">View All Users</a>
+    <!-- Header with Navigation -->
+    <header class="header">
+        <h1>🏪 Store Admin</h1>
+        <nav class="nav">
+            <a href="/dashboard" class="nav-link">Dashboard</a>
+            <a href="/store/category" class="nav-link">Category</a>
+            <a href="/store/product" class="nav-link">Product</a>
+            <a href="/" class="nav-link active">Users</a>
+            <a href="/auth/logout" style="padding: 8px 16px; background: #e74c3c; color: #fff; border: none; border-radius: 4px; text-decoration: none;">로그아웃</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="page-header">
+            <h2>User Management (사용자 관리)</h2>
+            <a href="/user-list" class="btn btn-primary">View All Users</a>
         </div>
-    </h1>
 
     <!-- Message Area (메시지 영역) -->
     <div id="message" class="message"></div>
@@ -190,7 +202,7 @@
 
         // Check if users array is empty (데이터 없음 체크)
         if (!users || users.length === 0) {
-            html += '<tr><td colspan="4" class="no-data">No Data (데이터가 없습니다)</td></tr>';
+            html += '<tr><td cols pan="4" class="no-data">No Data (데이터가 없습니다)</td></tr>';
         } else {
             // Loop through each user using jQuery.each
             $.each(users, function(index, user) {
@@ -208,5 +220,7 @@
     }
 </script>
 
+    </main>
+</div>
 </body>
 </html>

@@ -8,7 +8,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-
 public class UserRequest {
 
     @NotBlank(message = "username is required")
@@ -18,8 +17,14 @@ public class UserRequest {
     @NotBlank(message = "email is required")
     @Email(message = "email format is invalid")
     @Size(max = 150, message = "email must be at most 150 characters")
-
     private String email;
+
+    @Size(max = 255, message = "password must be at most 255 characters")
+    private String password;
+
+    @Size(max = 20, message = "role must be at most 20 characters")
+    private String role;
+
     @Size(max = 20, message = "status must be at most 20 characters")
     private String status;
 }
