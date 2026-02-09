@@ -1,7 +1,7 @@
 -- =====================================================
 -- Store Admin Database Schema
--- PostgreSQL Table Creation Script (테이블 생성 스크립트)
---
+-- PostgresSQL Table Creation Script (테이블 생성 스크립트)
+
 -- Execution order is important! (실행 순서 중요!)
 -- 1. Drop tables (referenced table last) - 테이블 삭제
 -- 2. Create tables (referenced table first) - 테이블 생성
@@ -61,7 +61,7 @@ CREATE TABLE category (
 );
 
 -- Explanation (설명):
--- SERIAL: PostgreSQL auto-increment (MySQL의 AUTO_INCREMENT와 같음)
+-- SERIAL: PostgresSQL auto-increment (MySQL의 AUTO_INCREMENT와 같음)
 -- PRIMARY KEY: Unique identifier, no duplicates, no NULL (고유 식별자)
 -- NOT NULL: Required field, empty not allowed (필수 값)
 -- DEFAULT CURRENT_TIMESTAMP: Auto-set current time if not provided (자동 현재 시간)
@@ -180,10 +180,10 @@ VALUES ('admin', 'admin@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0Kd
 
 -- Normal users (일반 사용자)
 INSERT INTO users (username, email, password, name, phone, role, status)
-VALUES ('johndoe', 'john@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0KdPBLBqZQKZhZz5KqpYN.', 'John Doe', '010-1234-5678', 'ROLE_USER', 'ACTIVE');
+VALUES ('john doe', 'john@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0KdPBLBqZQKZhZz5KqpYN.', 'John Doe', '010-1234-5678', 'ROLE_USER', 'ACTIVE');
 
 INSERT INTO users (username, email, password, name, phone, role, status)
-VALUES ('janedoe', 'jane@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0KdPBLBqZQKZhZz5KqpYN.', 'Jane Doe', '010-9876-5432', 'ROLE_USER', 'ACTIVE');
+VALUES ('Jane Doe', 'jane@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0KdPBLBqZQKZhZz5KqpYN.', 'Jane Doe', '010-9876-5432', 'ROLE_USER', 'ACTIVE');
 
 -- Inactive user for testing (비활성 사용자 - 테스트용)
 INSERT INTO users (username, email, password, name, phone, role, status)
@@ -245,4 +245,4 @@ SELECT * FROM users WHERE status = 'INACTIVE';
 SELECT * FROM users WHERE status = 'SUSPENDED';
 
 -- User login example (로그인 예시)
-SELECT * FROM users WHERE username = 'johndoe' AND password = 'password123';
+SELECT * FROM users WHERE username = 'john doe' AND password = 'password123';

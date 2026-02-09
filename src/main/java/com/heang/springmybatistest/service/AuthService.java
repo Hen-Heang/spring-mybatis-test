@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Authentication Service (인증 서비스)
- *
+ * <p>
  * 회원가입, 비밀번호 변경 등 인증 관련 비즈니스 로직
  * 한국 기업 프로젝트 표준 패턴
  */
@@ -28,9 +28,8 @@ public class AuthService {
      * 회원가입
      *
      * @param request 회원가입 요청 DTO
-     * @return 생성된 사용자 ID
      */
-    public Long register(RegisterRequest request) {
+    public void register(RegisterRequest request) {
         log.info("회원가입 요청: {}", request.getUsername());
 
         // 1. 비밀번호 확인 일치 검증
@@ -48,7 +47,7 @@ public class AuthService {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
 
-        // 4. 비밀번호 암호화 (BCrypt)
+        // 4. 비밀번호 암호화 (Bcrypt)
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         // 5. 사용자 엔티티 생성
@@ -66,7 +65,6 @@ public class AuthService {
         userMapper.insertUserWithPassword(user);
 
         log.info("회원가입 완료: {}, ID: {}", user.getUsername(), user.getId());
-        return user.getId();
     }
 
     /**

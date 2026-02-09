@@ -37,7 +37,7 @@ public class DynamicSqlPracticeController extends BaseController {
      * - keyword: search in username and email
      * - startDate: filter by created date (format: yyyy-MM-dd)
      * - endDate: filter by created date (format: yyyy-MM-dd)
-     *
+     * <p>
      * Examples:
      * GET /api/practice/search/if                           -> all users
      * GET /api/practice/search/if?username=john             -> users with username 'john'
