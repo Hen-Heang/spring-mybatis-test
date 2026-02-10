@@ -8,8 +8,8 @@
     <title>All Users - Store Admin</title>
 
     <!-- External CSS -->
-    <link rel="stylesheet" href="/css/admin.css" />
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
 
     <!-- jQuery CDN (Required for AJAX) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -21,11 +21,12 @@
     <header class="header">
         <h1>🏪 Store Admin</h1>
         <nav class="nav">
-            <a href="/dashboard" class="nav-link">Dashboard</a>
-            <a href="/store/category" class="nav-link">Category</a>
-            <a href="/store/product" class="nav-link">Product</a>
-            <a href="/" class="nav-link active">Users</a>
-            <a href="/auth/logout" style="padding: 8px 16px; background: #e74c3c; color: #fff; border: none; border-radius: 4px; text-decoration: none;">로그아웃</a>
+            <a href="${pageContext.request.contextPath}/dashboard" class="nav-link">Dashboard</a>
+            <a href="${pageContext.request.contextPath}/store/category" class="nav-link">Category</a>
+            <a href="${pageContext.request.contextPath}/store/product" class="nav-link">Product</a>
+            <a href="${pageContext.request.contextPath}/" class="nav-link active">Users</a>
+            <a href="${pageContext.request.contextPath}/auth/logout"
+               style="padding: 8px 16px; background: #e74c3c; color: #fff; border: none; border-radius: 4px; text-decoration: none;">로그아웃</a>
         </nav>
     </header>
 
@@ -33,7 +34,7 @@
     <main class="main">
         <div class="page-header">
             <h2>All Users (사용자 목록)</h2>
-            <a href="/" class="btn btn-primary">+ Create New User</a>
+            <a href="${pageContext.request.contextPath}/" class="btn btn-primary">+ Create New User</a>
         </div>
 
     <!-- Statistics Cards (통계 카드) -->
@@ -63,15 +64,15 @@
         </div>
         <div class="search-row">
             <!-- Search Type Dropdown -->
-            <select id="searchType" class="search-select">
+            <label for="searchType"></label><select id="searchType" class="search-select">
                 <option value="all">All Fields (전체)</option>
                 <option value="username">Username (이름)</option>
                 <option value="email">Email (이메일)</option>
             </select>
 
             <!-- Search Input -->
-            <input type="text" id="searchKeyword" class="search-input"
-                   placeholder="Enter search keyword... (검색어를 입력하세요)" />
+            <label for="searchKeyword"></label><input type="text" id="searchKeyword" class="search-input"
+                                                      placeholder="Enter search keyword... (검색어를 입력하세요)" />
 
             <!-- Search Button -->
             <button type="button" class="btn-search" onclick="searchUsers()">
@@ -89,7 +90,7 @@
     <div id="usersTableContainer">
         <div class="loading">Loading users...</div>
     </div>
-</div>
+
 
 <!-- View User Modal (사용자 상세 보기 모달) -->
 <div id="viewModal" class="modal-overlay">
@@ -139,9 +140,9 @@
                 <label for="editStatus">Status</label>
                 <select id="editStatus">
                     <option value="">-- Select Status --</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                    <option value="pending">Pending</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                    <option value="PENDING">Pending</option>
                 </select>
             </div>
         </div>
@@ -153,21 +154,21 @@
 </div>
 
 <!-- External JavaScript -->
-<script src="/js/user-api.js"></script>
+<script src="${pageContext.request.contextPath}/js/user-api.js"></script>
 
 <!-- Page-specific JavaScript using jQuery -->
 <script>
     // Store all users data (사용자 데이터 저장)
-    var allUsers = [];
+    let allUsers = [];
 
     /* ============================================
        DOCUMENT READY - 페이지 로드 시 실행
        ============================================ */
     $(document).ready(function() {
-        // Load users when page loads
+        // Load users when the page loads
         loadUsers();
 
-        // Setup modal close on outside click
+        // Set up modal close on the outside click
         setupModalCloseOnOutsideClick('viewModal');
         setupModalCloseOnOutsideClick('editModal');
     });
@@ -186,7 +187,7 @@
                     updateStats(allUsers);
                 } else {
                     allUsers = [];
-                    renderUsersTable([]);  // Show table with "No Data" message
+                    renderUsersTable([]);  // Show a table with a "No Data" message
                     updateStats([]);
                 }
             },
@@ -202,17 +203,17 @@
     // Update statistics (통계 업데이트)
     function updateStats(users) {
         $('#totalUsers').text(users.length);
-        $('#activeUsers').text(users.filter(function(u) { return u.status === 'active'; }).length);
-        $('#inactiveUsers').text(users.filter(function(u) { return u.status === 'inactive'; }).length);
-        $('#pendingUsers').text(users.filter(function(u) { return u.status === 'pending'; }).length);
+        $('#activeUsers').text(users.filter(function(u) { return u.status === 'ACTIVE'; }).length);
+        $('#inactiveUsers').text(users.filter(function(u) { return u.status === 'INACTIVE'; }).length);
+        $('#pendingUsers').text(users.filter(function(u) { return u.status === 'PENDING'; }).length);
     }
 
     // Render users table (사용자 테이블 렌더링)
     function renderUsersTable(users) {
-        var $container = $('#usersTableContainer');
+        const $container = $('#usersTableContainer');
 
         // Build table HTML
-        var html = '<table>';
+        let html = '<table>';
         html += '<thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead>';
         html += '<tbody>';
 
@@ -245,7 +246,7 @@
        ============================================ */
     function viewUser(id) {
         // Find user from stored data
-        var user = null;
+        let user = null;
         $.each(allUsers, function(index, u) {
             if (u.id === id) {
                 user = u;
@@ -271,7 +272,7 @@
        ============================================ */
     function editUser(id) {
         // Find user from stored data
-        var user = null;
+        let user = null;
         $.each(allUsers, function(index, u) {
             if (u.id === id) {
                 user = u;
@@ -294,8 +295,8 @@
 
     // Save user changes (사용자 정보 저장)
     function saveUser() {
-        var id = $('#editId').val();
-        var userData = {
+        const id = $('#editId').val();
+        const userData = {
             username: $('#editUsername').val(),
             email: $('#editEmail').val(),
             status: $('#editStatus').val() || null
@@ -342,8 +343,8 @@
        SEARCH USERS (사용자 검색)
        ============================================ */
     function searchUsers() {
-        var searchType = $('#searchType').val();
-        var keyword = $('#searchKeyword').val().trim().toLowerCase();
+        const searchType = $('#searchType').val();
+        const keyword = $('#searchKeyword').val().trim().toLowerCase();
 
         // If no keyword, show all users
         if (!keyword) {
@@ -352,8 +353,8 @@
             return;
         }
 
-        // Filter users based on search type
-        var filteredUsers = allUsers.filter(function(user) {
+        // Filter users based on a search type
+        const filteredUsers = allUsers.filter(function (user) {
             if (searchType === 'username') {
                 // Search by username only (이름으로만 검색)
                 return user.username && user.username.toLowerCase().indexOf(keyword) !== -1;
@@ -362,8 +363,8 @@
                 return user.email && user.email.toLowerCase().indexOf(keyword) !== -1;
             } else {
                 // Search by all (전체 검색) - username OR email
-                var matchUsername = user.username && user.username.toLowerCase().indexOf(keyword) !== -1;
-                var matchEmail = user.email && user.email.toLowerCase().indexOf(keyword) !== -1;
+                const matchUsername = user.username && user.username.toLowerCase().indexOf(keyword) !== -1;
+                const matchEmail = user.email && user.email.toLowerCase().indexOf(keyword) !== -1;
                 return matchUsername || matchEmail;
             }
         });

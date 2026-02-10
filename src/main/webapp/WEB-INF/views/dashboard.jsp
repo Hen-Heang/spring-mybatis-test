@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,33 +30,38 @@
         <header class="header">
             <h1>🏪 Store Admin Dashboard</h1>
             <nav class="nav">
-                <a href="/dashboard" class="nav-link active">Dashboard</a>
-                <a href="/store/category" class="nav-link">Category</a>
-                <a href="/store/product" class="nav-link">Product</a>
-                <a href="/" class="nav-link">Users</a>
-                <a href="/auth/logout" class="btn-logout">로그아웃</a>
+                <a href="${pageContext.request.contextPath}/dashboard" class="nav-link active">Dashboard</a>
+                <a href="${pageContext.request.contextPath}/store/category" class="nav-link">Category</a>
+                <a href="${pageContext.request.contextPath}/store/product" class="nav-link">Product</a>
+                <a href="${pageContext.request.contextPath}/" class="nav-link">Users</a>
+                <a href="${pageContext.request.contextPath}/auth/logout" class="btn btn-danger btn-logout">Logout</a>
             </nav>
         </header>
 
-        <main>
-            <h2 style="margin-bottom: 20px;">Welcome to Store Admin! 🎉</h2>
+        <main class="main main-dashboard">
+            <div class="page-header dashboard-header">
+                <div class="page-title">
+                    <h2>Welcome to Store Admin</h2>
+                    <p class="page-hint">Quick access to products, categories, and users.</p>
+                </div>
+            </div>
 
             <div class="dashboard-cards">
-                <a href="/store/category" class="dashboard-card">
+                <a href="${pageContext.request.contextPath}/store/category" class="dashboard-card">
                     <div class="dashboard-card-icon">📁</div>
                     <div class="dashboard-card-title">Categories</div>
                     <div class="dashboard-card-count" id="categoryCount">-</div>
                     <div class="dashboard-card-desc">Manage product categories</div>
                 </a>
 
-                <a href="/store/product" class="dashboard-card">
+                <a href="${pageContext.request.contextPath}/store/product" class="dashboard-card">
                     <div class="dashboard-card-icon">📦</div>
                     <div class="dashboard-card-title">Products</div>
                     <div class="dashboard-card-count" id="productCount">-</div>
                     <div class="dashboard-card-desc">Manage store products</div>
                 </a>
 
-                <a href="/" class="dashboard-card">
+                <a href="${pageContext.request.contextPath}/" class="dashboard-card">
                     <div class="dashboard-card-icon">👥</div>
                     <div class="dashboard-card-title">Users</div>
                     <div class="dashboard-card-count" id="userCount">-</div>

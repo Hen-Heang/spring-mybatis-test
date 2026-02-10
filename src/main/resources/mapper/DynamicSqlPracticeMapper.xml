@@ -67,7 +67,7 @@
                 AND created_at &lt;= #{endDate}
             </if>
 
-            <!-- LIKE search with keyword -->
+            <!-- LIKE search with a keyword -->
             <if test="keyword != null and keyword != ''">
                 AND (
                     username LIKE CONCAT('%', #{keyword}, '%')

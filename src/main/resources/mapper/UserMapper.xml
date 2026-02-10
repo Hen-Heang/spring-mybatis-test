@@ -31,12 +31,16 @@
         INSERT INTO users (
             username,
             email,
+            name,
+            phone,
             password,
             role,
             status
         ) VALUES (
             #{username},
             #{email},
+            #{name},
+            #{phone},
             #{password},
             COALESCE(#{role}, 'ROLE_USER'),
             COALESCE(#{status}, 'ACTIVE')

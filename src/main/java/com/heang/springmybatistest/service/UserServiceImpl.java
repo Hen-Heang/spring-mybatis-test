@@ -10,6 +10,7 @@ import com.heang.springmybatistest.model.Users;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 
 @Service
@@ -19,10 +20,18 @@ public class UserServiceImpl implements  UserService {
 
     private final UserMapper userMapper;
     private final UserDtoMapper userDtoMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
     public void createuser(UserRequest userRequest) {
+        if (userRequest.getStatus() != null && !userRequest.getStatus().isBlank()) {
+            userRequest.setStatus(userRequest.getStatus().toUpperCase());
+        } else {
+            userRequest.setStatus(null);
+        }
+        String encodedPassword = passwordEncoder.encode(userRequest.getPassword());
+        userRequest.setPassword(encodedPassword);
         userMapper.insertUser(userRequest);
     }
 
@@ -41,6 +50,11 @@ public class UserServiceImpl implements  UserService {
     public UserResponse updateUser(Long id, @Valid UserUpdateRequest userUpdateRequest) {
 
 //        Update user logic to be implemented
+        if (userUpdateRequest.getStatus() != null && !userUpdateRequest.getStatus().isBlank()) {
+            userUpdateRequest.setStatus(userUpdateRequest.getStatus().toUpperCase());
+        } else {
+            userUpdateRequest.setStatus(null);
+        }
         userMapper.updateUser(id, userUpdateRequest);
 
         Users getUserUpdate = userMapper.selectUserById(id);

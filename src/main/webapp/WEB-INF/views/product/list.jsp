@@ -13,20 +13,29 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1>🏪 Store Admin</h1>
+            <div class="brand">
+                <div class="brand-mark">SA</div>
+                <div class="brand-text">
+                    <h1>Store Admin</h1>
+                    <span class="brand-subtitle">Product Management</span>
+                </div>
+            </div>
             <nav class="nav">
-                <a href="/dashboard" class="nav-link">Dashboard</a>
-                <a href="/store/category" class="nav-link">Category</a>
-                <a href="/store/product" class="nav-link active">Product</a>
-                <a href="/" class="nav-link">Users</a>
-                <a href="/auth/logout" class="btn-logout" style="padding: 8px 16px; background: #e74c3c; color: #fff; border: none; border-radius: 4px; text-decoration: none;">로그아웃</a>
+                <a href="${pageContext.request.contextPath}/dashboard" class="nav-link">Dashboard</a>
+                <a href="${pageContext.request.contextPath}/store/category" class="nav-link">Category</a>
+                <a href="${pageContext.request.contextPath}/store/product" class="nav-link active">Product</a>
+                <a href="${pageContext.request.contextPath}/" class="nav-link">Users</a>
+                <a href="${pageContext.request.contextPath}/auth/logout" class="btn btn-danger btn-logout">Logout</a>
             </nav>
         </header>
 
         <!-- Main Content -->
         <main class="main">
             <div class="page-header">
-                <h2>${pageTitle}</h2>
+                <div class="page-title">
+                    <h2>${pageTitle}</h2>
+                    <p class="page-hint">Manage pricing, stock, and category assignments.</p>
+                </div>
                 <button type="button" id="btnAdd" class="btn btn-primary">+ Add Product</button>
             </div>
 
@@ -41,6 +50,7 @@
                         <label for="searchCategory">Category</label>
                         <select id="searchCategory" class="form-control">
                             <option value="">All</option>
+                            <jsp:useBean id="categories" scope="request" type="java.util.List"/>
                             <c:forEach var="category" items="${categories}">
                                 <option value="${category.id}">${category.name}</option>
                             </c:forEach>
@@ -54,7 +64,7 @@
                         <label for="searchMaxPrice">Max Price</label>
                         <input type="number" id="searchMaxPrice" class="form-control" placeholder="999999">
                     </div>
-                    <div class="search-item">
+                    <div class="search-item search-actions">
                         <button type="button" id="btnSearch" class="btn btn-primary">Search</button>
                         <button type="button" id="btnReset" class="btn btn-secondary">Reset</button>
                     </div>

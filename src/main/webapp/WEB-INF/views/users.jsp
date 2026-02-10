@@ -8,8 +8,8 @@
     <title>User Management - Store Admin</title>
 
     <!-- External CSS -->
-    <link rel="stylesheet" href="/css/admin.css" />
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
 
     <!-- jQuery CDN (Required for AJAX) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -21,11 +21,11 @@
     <header class="header">
         <h1>🏪 Store Admin</h1>
         <nav class="nav">
-            <a href="/dashboard" class="nav-link">Dashboard</a>
-            <a href="/store/category" class="nav-link">Category</a>
-            <a href="/store/product" class="nav-link">Product</a>
-            <a href="/" class="nav-link active">Users</a>
-            <a href="/auth/logout" style="padding: 8px 16px; background: #e74c3c; color: #fff; border: none; border-radius: 4px; text-decoration: none;">로그아웃</a>
+            <a href="${pageContext.request.contextPath}/dashboard" class="nav-link">Dashboard</a>
+            <a href="${pageContext.request.contextPath}/store/category" class="nav-link">Category</a>
+            <a href="${pageContext.request.contextPath}/store/product" class="nav-link">Product</a>
+            <a href="${pageContext.request.contextPath}/" class="nav-link active">Users</a>
+            <a href="${pageContext.request.contextPath}/auth/logout" style="padding: 8px 16px; background: #e74c3c; color: #fff; border: none; border-radius: 4px; text-decoration: none;">Logout-로그아웃</a>
         </nav>
     </header>
 
@@ -33,7 +33,7 @@
     <main class="main">
         <div class="page-header">
             <h2>User Management (사용자 관리)</h2>
-            <a href="/user-list" class="btn btn-primary">View All Users</a>
+            <a href="${pageContext.request.contextPath}/user-list" class="btn btn-primary">View All Users</a>
         </div>
 
     <!-- Message Area (메시지 영역) -->
@@ -52,12 +52,24 @@
                 <input type="email" id="email" name="email" required maxlength="150" placeholder="Enter email" />
             </div>
             <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" maxlength="100" placeholder="Enter full name" />
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="text" id="phone" name="phone" maxlength="20" placeholder="Enter phone number" />
+            </div>
+            <div class="form-group">
+                <label for="password">Password *</label>
+                <input type="password" id="password" name="password" required minlength="8" maxlength="255" placeholder="Enter password" />
+            </div>
+            <div class="form-group">
                 <label for="status">Status</label>
                 <select id="status" name="status">
                     <option value="">-- Select Status --</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                    <option value="pending">Pending</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                    <option value="PENDING">Pending</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-success">Create User</button>
@@ -69,7 +81,6 @@
     <div id="usersTableContainer">
         <div class="loading">Loading users...</div>
     </div>
-</div>
 
 <!-- Success Modal (성공 모달) -->
 <div id="successModal" class="modal-overlay">
@@ -99,7 +110,7 @@
 </div>
 
 <!-- External JavaScript -->
-<script src="/js/user-api.js"></script>
+<script src="${pageContext.request.contextPath}/js/user-api.js"></script>
 
 <!-- Page-specific JavaScript using jQuery -->
 <script>
@@ -107,10 +118,9 @@
        DOCUMENT READY - 페이지 로드 시 실행
        ============================================ */
     $(document).ready(function() {
-        // Load users when page loads
+        // Load users when the page loads
         loadUsers();
-
-        // Setup modal close on outside click
+        // Set up modal close on the outside click
         setupModalCloseOnOutsideClick('successModal');
 
         // Form submit handler using jQuery
@@ -125,9 +135,12 @@
        ============================================ */
     function createUser() {
         // Get form data using jQuery
-        var userData = {
+        const userData = {
             username: $('#username').val(),
             email: $('#email').val(),
+            name: $('#name').val() || null,
+            phone: $('#phone').val() || null,
+            password: $('#password').val(),
             status: $('#status').val() || null
         };
 
@@ -141,7 +154,7 @@
             },
             // Error callback (에러 시 콜백)
             function(xhr, status, error) {
-                var errorMsg = 'Failed to create user';
+                let errorMsg = 'Failed to create user';
                 if (xhr.responseJSON && xhr.responseJSON.resultMsg) {
                     errorMsg = xhr.responseJSON.resultMsg;
                 }
@@ -180,7 +193,7 @@
                 if (result.data && result.data.length > 0) {
                     renderUsersTable(result.data);
                 } else {
-                    renderUsersTable([]);  // Show table with "No Data" message
+                    renderUsersTable([]);  // Show a table with a "No Data" message
                 }
             },
             // Error callback
@@ -194,9 +207,9 @@
 
     // Render users table (사용자 테이블 렌더링)
     function renderUsersTable(users) {
-        var $container = $('#usersTableContainer');
+        const $container = $('#usersTableContainer');
 
-        var html = '<table>';
+        let html = '<table>';
         html += '<thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Status</th></tr></thead>';
         html += '<tbody>';
 

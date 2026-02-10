@@ -22,7 +22,7 @@ public class Users {
 
     private String email;
 
-    private String password;        // BCrypt 암호화된 비밀번호
+    private String password;        // Bcrypt 암호화된 비밀번호
 
     private String name;            // 사용자 이름
 

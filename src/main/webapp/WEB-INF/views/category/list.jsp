@@ -1,3 +1,4 @@
+<jsp:useBean id="pageTitle" scope="request" />
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
@@ -15,18 +16,21 @@
         <header class="header">
             <h1>🏪 Store Admin</h1>
             <nav class="nav">
-                <a href="/dashboard" class="nav-link">Dashboard</a>
-                <a href="/store/category" class="nav-link active">Category</a>
-                <a href="/store/product" class="nav-link">Product</a>
-                <a href="/" class="nav-link">Users</a>
-                <a href="/auth/logout" class="btn-logout" style="padding: 8px 16px; background: #e74c3c; color: #fff; border: none; border-radius: 4px; text-decoration: none;">로그아웃</a>
+                <a href="${pageContext.request.contextPath}/dashboard" class="nav-link">Dashboard</a>
+                <a href="${pageContext.request.contextPath}/store/category" class="nav-link active">Category</a>
+                <a href="${pageContext.request.contextPath}/store/product" class="nav-link">Product</a>
+                <a href="${pageContext.request.contextPath}/" class="nav-link">Users</a>
+                <a href="${pageContext.request.contextPath}/auth/logout" class="btn btn-danger btn-logout">Logout</a>
             </nav>
         </header>
 
         <!-- Main Content -->
         <main class="main">
             <div class="page-header">
-                <h2>${pageTitle}</h2>
+                <div class="page-title">
+                    <h2>${pageTitle}</h2>
+                    <p class="page-hint">Create and organize categories for your catalog.</p>
+                </div>
                 <button type="button" id="btnAdd" class="btn btn-primary">+ Add Category</button>
             </div>
 
@@ -75,6 +79,6 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="/js/category.js"></script>
+    <script src="${pageContext.request.contextPath}/js/category.js"></script>
 </body>
 </html>

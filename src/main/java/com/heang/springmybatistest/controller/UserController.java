@@ -18,7 +18,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-//    Create new user
+//    Create a new user
     @PostMapping
     public ApiResponse<Void> createUser(
             @Valid @RequestBody UserRequest userRequest

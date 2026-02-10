@@ -14,7 +14,7 @@
    REQUIRES: jQuery library must be loaded before this file
    ============================================ */
 
-var UserAPI = {
+const UserAPI = {
 
     // Base URL for user endpoints (maps to UserController)
     baseUrl: '/users',
@@ -24,19 +24,18 @@ var UserAPI = {
        HTTP: GET /users
        Backend: UserController.getUserList()
        ---------------------------------------- */
-    getAll: function(successCallback, errorCallback) {
+    getAll: function (successCallback, errorCallback) {
         $.ajax({
             url: this.baseUrl,          // Request URL
             type: 'GET',                // HTTP Method
             dataType: 'json',           // Expected response type
-            success: function(result) {
-                // result = { resultCd, resultMsg, data: [...] }
+            success: function (result) {
                 console.log('API Response:', result);
                 if (successCallback) {
                     successCallback(result);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('Error fetching users:', error);
                 if (errorCallback) {
                     errorCallback(xhr, status, error);
@@ -50,18 +49,18 @@ var UserAPI = {
        HTTP: GET /users/{id}
        Backend: UserController.getUserById()
        ---------------------------------------- */
-    getById: function(id, successCallback, errorCallback) {
+    getById: function (id, successCallback, errorCallback) {
         $.ajax({
             url: this.baseUrl + '/' + id,
             type: 'GET',
             dataType: 'json',
-            success: function(result) {
+            success: function (result) {
                 console.log('User Detail:', result);
                 if (successCallback) {
                     successCallback(result);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('Error fetching user:', error);
                 if (errorCallback) {
                     errorCallback(xhr, status, error);
@@ -76,21 +75,20 @@ var UserAPI = {
        Backend: UserController.createUser()
        Body: { username, email, status }
        ---------------------------------------- */
-    create: function(userData, successCallback, errorCallback) {
+    create: function (userData, successCallback, errorCallback) {
         $.ajax({
             url: this.baseUrl,
             type: 'POST',
-
-            contentType: 'application/json',    // Tell server we're sending JSON
+            contentType: 'application/json',    // Tell the server we're sending JSON
             data: JSON.stringify(userData),      // Convert object to JSON string
             dataType: 'json',
-            success: function(result) {
+            success: function (result) {
                 console.log('Create Response:', result);
                 if (successCallback) {
                     successCallback(result);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('Error creating user:', error);
                 if (errorCallback) {
                     errorCallback(xhr, status, error);
@@ -105,20 +103,20 @@ var UserAPI = {
        Backend: UserController.updateUser()
        Body: { username, email, status }
        ---------------------------------------- */
-    update: function(id, userData, successCallback, errorCallback) {
+    update: function (id, userData, successCallback, errorCallback) {
         $.ajax({
             url: this.baseUrl + '/' + id,
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(userData),
             dataType: 'json',
-            success: function(result) {
+            success: function (result) {
                 console.log('Update Response:', result);
                 if (successCallback) {
                     successCallback(result);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('Error updating user:', error);
                 if (errorCallback) {
                     errorCallback(xhr, status, error);
@@ -132,18 +130,18 @@ var UserAPI = {
        HTTP: DELETE /users/{id}
        Backend: UserController.deleteUser()
        ---------------------------------------- */
-    delete: function(id, successCallback, errorCallback) {
+    delete: function (id, successCallback, errorCallback) {
         $.ajax({
             url: this.baseUrl + '/' + id,
             type: 'DELETE',
             dataType: 'json',
-            success: function(result) {
+            success: function (result) {
                 console.log('Delete Response:', result);
                 if (successCallback) {
                     successCallback(result);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('Error deleting user:', error);
                 if (errorCallback) {
                     errorCallback(xhr, status, error);
