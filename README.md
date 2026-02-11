@@ -144,6 +144,18 @@ spring.datasource.password=your_password
 mvnw.cmd spring-boot:run
 ```
 
+### JVM Native Access
+If you see a warning about `java.lang.System::load` and restricted native access (for example from `cool-request-agent.jar`),
+this project enables the required flag for Maven runs via `.mvn/jvm.config`.
+
+If you run outside Maven, add the flag manually:
+
+```bash
+java --enable-native-access=ALL-UNNAMED -jar target/spring-mybatis-test-0.0.1-SNAPSHOT.jar
+```
+
+For IntelliJ, add `--enable-native-access=ALL-UNNAMED` to the Run Configuration VM options.
+
 ### Access Application
 - **Create User Page**: http://localhost:8080/
 - **User List Page**: http://localhost:8080/user-list

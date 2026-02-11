@@ -18,6 +18,17 @@ DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS users;
 
+-- Drop JWT-related tables too (keep schema reset clean)
+DROP TABLE IF EXISTS tb_partner_otp;
+DROP TABLE IF EXISTS tb_merchant_otp;
+DROP TABLE IF EXISTS tb_partner_phone;
+DROP TABLE IF EXISTS tb_partner_info;
+DROP TABLE IF EXISTS tb_merchant_phone;
+DROP TABLE IF EXISTS tb_merchant_info;
+DROP TABLE IF EXISTS tb_partner_account;
+DROP TABLE IF EXISTS tb_merchant_account;
+DROP TABLE IF EXISTS tb_role;
+
 -- =====================================================
 -- 2. Create User table (사용자 테이블 생성)
 -- =====================================================
@@ -188,6 +199,85 @@ VALUES ('Jane Doe', 'jane@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0
 -- Inactive user for testing (비활성 사용자 - 테스트용)
 INSERT INTO users (username, email, password, name, phone, role, status)
 VALUES ('inactive_user', 'inactive@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0KdPBLBqZQKZhZz5KqpYN.', 'Inactive User', '010-1111-1111', 'ROLE_USER', 'INACTIVE');
+
+-- =====================================================
+-- JWT auth tables (drms_api compatibility)
+-- =====================================================
+CREATE TABLE tb_role (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE tb_partner_account (
+    id SERIAL PRIMARY KEY,
+    role_id INTEGER NOT NULL REFERENCES tb_role(id),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_verified BOOLEAN DEFAULT TRUE,
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE tb_merchant_account (
+    id SERIAL PRIMARY KEY,
+    role_id INTEGER NOT NULL REFERENCES tb_role(id),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_verified BOOLEAN DEFAULT TRUE,
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE tb_partner_phone (
+    id SERIAL PRIMARY KEY,
+    partner_account_id INTEGER NOT NULL REFERENCES tb_partner_account(id) ON DELETE CASCADE,
+    phone_number VARCHAR(20) NOT NULL,
+    is_primary BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE tb_partner_info (
+    id SERIAL PRIMARY KEY,
+    partner_account_id INTEGER NOT NULL REFERENCES tb_partner_account(id) ON DELETE CASCADE,
+    primary_phone_number VARCHAR(20),
+    partner_name VARCHAR(100)
+);
+
+CREATE TABLE tb_merchant_phone (
+    id SERIAL PRIMARY KEY,
+    merchant_account_id INTEGER NOT NULL REFERENCES tb_merchant_account(id) ON DELETE CASCADE,
+    phone_number VARCHAR(20) NOT NULL,
+    is_primary BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE tb_merchant_info (
+    id SERIAL PRIMARY KEY,
+    merchant_account_id INTEGER NOT NULL REFERENCES tb_merchant_account(id) ON DELETE CASCADE,
+    primary_phone_number VARCHAR(20),
+    merchant_name VARCHAR(100)
+);
+
+-- Seed auth roles/users (admin + merchant)
+INSERT INTO tb_role (name) VALUES ('PARTNER'), ('MERCHANT');
+
+INSERT INTO tb_partner_account (role_id, email, password, is_verified, is_active)
+VALUES (1, 'admin@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0KdPBLBqZQKZhZz5KqpYN.', TRUE, TRUE);
+
+INSERT INTO tb_partner_phone (partner_account_id, phone_number)
+VALUES ((SELECT id FROM tb_partner_account WHERE email = 'admin@example.com'), '010-0000-0000');
+
+INSERT INTO tb_partner_info (partner_account_id, primary_phone_number, partner_name)
+VALUES ((SELECT id FROM tb_partner_account WHERE email = 'admin@example.com'), '010-0000-0000', 'Admin Partner');
+
+INSERT INTO tb_merchant_account (role_id, email, password, is_verified, is_active)
+VALUES (2, 'merchant@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqkB/BW0KdPBLBqZQKZhZz5KqpYN.', TRUE, TRUE);
+
+INSERT INTO tb_merchant_phone (merchant_account_id, phone_number)
+VALUES ((SELECT id FROM tb_merchant_account WHERE email = 'merchant@example.com'), '010-1111-2222');
+
+INSERT INTO tb_merchant_info (merchant_account_id, primary_phone_number, merchant_name)
+VALUES ((SELECT id FROM tb_merchant_account WHERE email = 'merchant@example.com'), '010-1111-2222', 'Sample Merchant');
 
 -- =====================================================
 -- 7. Verification Queries (데이터 확인 쿼리)

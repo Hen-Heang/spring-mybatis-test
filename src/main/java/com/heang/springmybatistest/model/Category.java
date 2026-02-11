@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 /**
  * Category Entity (카테고리 엔티티)
  * Maps 1:1 to category table (테이블과 1:1 매핑)
- *
+ * <p>
  * Table: category
  * - id: Primary Key, auto-increment (기본키, 자동 증가)
  * - name: Category name, required (카테고리명, 필수)

@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Category Mapper Interface
- * Following User mapper pattern (User 매퍼 패턴 따름)
+ * Following a User mapper pattern (User 매퍼 패턴 따름)
  */
 @Mapper
 public interface CategoryMapper {

@@ -1,9 +1,10 @@
-package com.heang.springmybatistest.security;
+package com.heang.springmybatistest.configuration;
 
 import com.heang.springmybatistest.mapper.UserMapper;
 import com.heang.springmybatistest.model.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,10 +16,10 @@ import java.util.Collections;
 
 /**
  * Custom UserDetailsService (커스텀 사용자 인증 서비스)
- *
+ * <p>
  * Spring Security의 UserDetailsService 구현
  * MyBatis를 통해 DB에서 사용자 정보 조회
- *
+ * <p>
  * 한국 기업 프로젝트에서 가장 많이 사용되는 패턴
  */
 @Service
@@ -37,7 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      * @throws UsernameNotFoundException 사용자를 찾을 수 없을 때
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
         log.debug("로그인 시도: {}", username);
 
         // DB에서 사용자 조회
