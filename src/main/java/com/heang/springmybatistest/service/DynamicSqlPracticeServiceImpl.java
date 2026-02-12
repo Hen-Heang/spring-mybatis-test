@@ -220,7 +220,7 @@ public class DynamicSqlPracticeServiceImpl implements DynamicSqlPracticeService 
          */
         dynamicSqlPracticeMapper.dynamicUpdate(id, request);
 
-        // Return updated user (would need to fetch from DB in real scenario)
+        // Return the updated user (would need to fetch from DB in a real scenario)
         // For simplicity, creating response from request
         return UserResponse.builder()
                 .id(id)
@@ -242,7 +242,7 @@ public class DynamicSqlPracticeServiceImpl implements DynamicSqlPracticeService 
          * TRY DIFFERENT COMBINATIONS:
          * 1. Empty request -> all users, sorted by id DESC
          * 2. keyword="john" -> searches in username AND email
-         * 3. statuses=["ACTIVE","PENDING"] -> users with these statuses
+         * 3. statuses=[ "ACTIVE","PENDING"] -> users with these statuses
          * 4. sortBy="username", sortOrder="ASC" -> custom sorting
          * 5. page=1, size=10 -> first 10 results
          * 6. page=2, size=10 -> next 10 results

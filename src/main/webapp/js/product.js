@@ -10,7 +10,7 @@ const CATEGORY_API = '/api/categories';
 // ===================================
 // Initialization (초기화)
 // ===================================
-$(document).ready(function() {
+$(document).ready(function () {
     // Load product list (상품 목록 로드)
     loadProducts();
 
@@ -23,23 +23,23 @@ $(document).ready(function() {
 // ===================================
 function bindEvents() {
     // Add button click (추가 버튼 클릭)
-    $('#btnAdd').on('click', function() {
+    $('#btnAdd').on('click', function () {
         openAddModal();
     });
 
     // Form submit (폼 제출)
-    $('#productForm').on('submit', function(e) {
+    $('#productForm').on('submit', function (e) {
         e.preventDefault();
         saveProduct();
     });
 
     // Search button (검색 버튼)
-    $('#btnSearch').on('click', function() {
+    $('#btnSearch').on('click', function () {
         loadProducts();
     });
 
     // Reset button (초기화 버튼)
-    $('#btnReset').on('click', function() {
+    $('#btnReset').on('click', function () {
         $('#searchKeyword').val('');
         $('#searchCategory').val('');
         $('#searchMinPrice').val('');
@@ -48,14 +48,14 @@ function bindEvents() {
     });
 
     // Close modal on outside click (모달 외부 클릭 시 닫기)
-    $('#productModal').on('click', function(e) {
+    $('#productModal').on('click', function (e) {
         if (e.target === this) {
             closeModal();
         }
     });
 
     // Close modal with ESC key (ESC 키로 모달 닫기)
-    $(document).on('keydown', function(e) {
+    $(document).on('keydown', function (e) {
         if (e.key === 'Escape') {
             closeModal();
         }
@@ -69,7 +69,7 @@ function loadProducts() {
     $.ajax({
         url: API_BASE,
         method: 'GET',
-        success: function(response) {
+        success: function (response) {
             console.log('Product API Response:', response);
             if (response.status && response.status.code === 200) {
                 renderProductTable(response.data);
@@ -80,7 +80,7 @@ function loadProducts() {
                 showError(response.status ? response.status.message : 'Unknown error');
             }
         },
-        error: function(xhr) {
+        error: function (xhr) {
             console.error('Product API Error:', xhr);
             showError('Failed to load product list (상품 목록 로드 실패)');
         }
@@ -105,7 +105,7 @@ function renderProductTable(products) {
         return;
     }
 
-    products.forEach(function(product) {
+    products.forEach(function (product) {
         // Format date (날짜 포맷팅)
         const createdAt = formatDateTime(product.createdAt);
         // Format price (가격 포맷팅)
@@ -172,7 +172,7 @@ function saveProduct() {
         method: method,
         contentType: 'application/json',
         data: JSON.stringify(data),
-        success: function(response) {
+        success: function (response) {
             if (response.status && response.status.code === 200) {
                 alert('Saved successfully (저장 완료)');
                 closeModal();
@@ -181,7 +181,7 @@ function saveProduct() {
                 alert(response.status ? response.status.message : 'Save failed');
             }
         },
-        error: function(xhr) {
+        error: function (xhr) {
             const response = xhr.responseJSON;
             alert(response?.status?.message || 'Save failed (저장 실패)');
         }
@@ -199,7 +199,7 @@ function deleteProduct(id, name) {
     $.ajax({
         url: `${API_BASE}/${id}`,
         method: 'DELETE',
-        success: function(response) {
+        success: function (response) {
             if (response.status && response.status.code === 200) {
                 alert('Deleted successfully (삭제 완료)');
                 loadProducts();
@@ -207,7 +207,7 @@ function deleteProduct(id, name) {
                 alert(response.status ? response.status.message : 'Delete failed');
             }
         },
-        error: function(xhr) {
+        error: function (xhr) {
             const response = xhr.responseJSON;
             alert(response?.status?.message || 'Delete failed (삭제 실패)');
         }
@@ -233,7 +233,7 @@ function openEditModal(id) {
     $.ajax({
         url: `${API_BASE}/${id}`,
         method: 'GET',
-        success: function(response) {
+        success: function (response) {
             if (response.status && response.status.code === 200) {
                 const product = response.data;
                 $('#modalTitle').text('Edit Product');
@@ -248,7 +248,7 @@ function openEditModal(id) {
                 alert('Failed to load product data (상품 데이터 로드 실패)');
             }
         },
-        error: function(xhr) {
+        error: function (xhr) {
             alert('Failed to load product data (상품 데이터 로드 실패)');
         }
     });

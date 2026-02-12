@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * Controller for practicing Dynamic SQL operations
- *
+ * <p>
  * Test these endpoints with Postman or any REST client
  */
 @RestController
@@ -29,7 +29,7 @@ public class DynamicSqlPracticeController extends BaseController {
     // =========================================================
     /**
      * GET /api/practice/search/if
-     *
+     * <p>
      * Query Parameters (all optional):
      * - username: filter by username
      * - email: filter by email
@@ -39,10 +39,10 @@ public class DynamicSqlPracticeController extends BaseController {
      * - endDate: filter by created date (format: yyyy-MM-dd)
      * <p>
      * Examples:
-     * GET /api/practice/search/if                           -> all users
-     * GET /api/practice/search/if?username=john             -> users with username 'john'
-     * GET /api/practice/search/if?status=ACTIVE             -> active users
-     * GET /api/practice/search/if?keyword=test              -> users with 'test' in username or email
+     * GET /api/practice/search/if -> all users
+     * GET /api/practice/search/if?username=john -> users with username 'john'
+     * GET /api/practice/search/if?status=ACTIVE -> active users
+     * GET /api/practice/search/if?keyword=test -> users with 'test' in username or email
      */
     @GetMapping("/search/if")
     public ApiResponse<List<UserResponse>> searchWithIf(UserSearchRequest request) {
@@ -77,7 +77,7 @@ public class DynamicSqlPracticeController extends BaseController {
     // =========================================================
     /**
      * GET /api/practice/search/trim
-     * Same as /search/if but uses <trim> instead of <where>
+     * Same as /search/if it uses <trim> instead of <where>
      */
     @GetMapping("/search/trim")
     public ApiResponse<List<UserResponse>> searchWithTrim(UserSearchRequest request) {

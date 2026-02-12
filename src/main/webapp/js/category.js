@@ -9,7 +9,7 @@ const API_BASE = '/api/categories';
 // ===================================
 // Initialization (초기화)
 // ===================================
-$(document).ready(function() {
+$(document).ready(function () {
     // Load category list (카테고리 목록 로드)
     loadCategories();
 
@@ -22,25 +22,25 @@ $(document).ready(function() {
 // ===================================
 function bindEvents() {
     // Add button click (추가 버튼 클릭)
-    $('#btnAdd').on('click', function() {
+    $('#btnAdd').on('click', function () {
         openAddModal();
     });
 
     // Form submit (폼 제출)
-    $('#categoryForm').on('submit', function(e) {
+    $('#categoryForm').on('submit', function (e) {
         e.preventDefault();
         saveCategory();
     });
 
     // Close modal on outside click (모달 외부 클릭 시 닫기)
-    $('#categoryModal').on('click', function(e) {
+    $('#categoryModal').on('click', function (e) {
         if (e.target === this) {
             closeModal();
         }
     });
 
     // Close modal with ESC key (ESC 키로 모달 닫기)
-    $(document).on('keydown', function(e) {
+    $(document).on('keydown', function (e) {
         if (e.key === 'Escape') {
             closeModal();
         }
@@ -54,7 +54,7 @@ function loadCategories() {
     $.ajax({
         url: API_BASE,
         method: 'GET',
-        success: function(response) {
+        success: function (response) {
             console.log('Category API Response:', response);
             if (response.status && response.status.code === 200) {
                 renderCategoryTable(response.data);
@@ -65,7 +65,7 @@ function loadCategories() {
                 showError(response.status ? response.status.message : 'Unknown error');
             }
         },
-        error: function(xhr) {
+        error: function (xhr) {
             console.error('Category API Error:', xhr);
             showError('Failed to load category list (카테고리 목록 로드 실패)');
         }
@@ -90,7 +90,7 @@ function renderCategoryTable(categories) {
         return;
     }
 
-    categories.forEach(function(category) {
+    categories.forEach(function (category) {
         // Format date (날짜 포맷팅)
         const createdAt = formatDateTime(category.createdAt);
 
@@ -127,7 +127,7 @@ function saveCategory() {
         return;
     }
 
-    const data = { name: name };
+    const data = {name: name};
 
     // If ID exists = update, else = create (ID 있으면 수정, 없으면 등록)
     const method = id ? 'PUT' : 'POST';
@@ -138,7 +138,7 @@ function saveCategory() {
         method: method,
         contentType: 'application/json',
         data: JSON.stringify(data),
-        success: function(response) {
+        success: function (response) {
             if (response.status && response.status.code === 200) {
                 alert('Saved successfully (저장 완료)');
                 closeModal();
@@ -147,7 +147,7 @@ function saveCategory() {
                 alert(response.status ? response.status.message : 'Save failed');
             }
         },
-        error: function(xhr) {
+        error: function (xhr) {
             const response = xhr.responseJSON;
             alert(response?.status?.message || 'Save failed (저장 실패)');
         }
@@ -165,7 +165,7 @@ function deleteCategory(id, name) {
     $.ajax({
         url: `${API_BASE}/${id}`,
         method: 'DELETE',
-        success: function(response) {
+        success: function (response) {
             if (response.status && response.status.code === 200) {
                 alert('Deleted successfully (삭제 완료)');
                 loadCategories();
@@ -173,7 +173,7 @@ function deleteCategory(id, name) {
                 alert(response.status ? response.status.message : 'Delete failed');
             }
         },
-        error: function(xhr) {
+        error: function (xhr) {
             const response = xhr.responseJSON;
             alert(response?.status?.message || 'Delete failed (삭제 실패)');
         }

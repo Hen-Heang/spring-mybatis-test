@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Category REST API Controller
- * Following User controller pattern (User 컨트롤러 패턴 따름)
+ * Following a User controller pattern (User 컨트롤러 패턴 따름)
  */
 @RestController
 @RequestMapping("/api/categories")

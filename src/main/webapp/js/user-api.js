@@ -157,39 +157,39 @@ const UserAPI = {
    Common UI utility functions
    ============================================ */
 
-var UIHelper = {
+const UIHelper = {
 
     // Show message banner (메시지 배너 표시)
-    showMessage: function(elementId, text, isSuccess) {
-        var $element = $('#' + elementId);
+    showMessage: function (elementId, text, isSuccess) {
+        const $element = $('#' + elementId);
         if ($element.length) {
             $element.text(text)
-                    .removeClass('success error')
-                    .addClass('message ' + (isSuccess ? 'success' : 'error'))
-                    .show();
+                .removeClass('success error')
+                .addClass('message ' + (isSuccess ? 'success' : 'error'))
+                .show();
 
             // Auto hide after 5 seconds
-            setTimeout(function() {
+            setTimeout(function () {
                 $element.fadeOut();
             }, 5000);
         }
     },
 
     // Show modal (모달 표시)
-    showModal: function(modalId) {
+    showModal: function (modalId) {
         $('#' + modalId).css('display', 'flex');
     },
 
     // Close modal (모달 닫기)
-    closeModal: function(modalId) {
+    closeModal: function (modalId) {
         $('#' + modalId).hide();
     },
 
     // Get status badge HTML (상태 배지 HTML 생성)
-    getStatusBadge: function(status) {
+    getStatusBadge: function (status) {
         if (!status) return '<span class="badge">N/A</span>';
-        var badgeClass = '';
-        var statusLower = status.toLowerCase();
+        let badgeClass = '';
+        const statusLower = status.toLowerCase();
         if (statusLower === 'active') badgeClass = 'badge-active';
         else if (statusLower === 'inactive') badgeClass = 'badge-inactive';
         else if (statusLower === 'pending') badgeClass = 'badge-pending';
@@ -197,7 +197,7 @@ var UIHelper = {
     },
 
     // Escape HTML to prevent XSS (XSS 방지를 위한 HTML 이스케이프)
-    escapeHtml: function(text) {
+    escapeHtml: function (text) {
         if (!text) return '';
         return $('<div>').text(text).html();
     }

@@ -19,10 +19,10 @@ function ajaxGet(url, successCallback, errorCallback) {
         url: url,
         type: 'GET',
         dataType: 'json',
-        success: function(result) {
+        success: function (result) {
             if (successCallback) successCallback(result);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error('AJAX Error:', error);
             if (errorCallback) errorCallback(xhr, status, error);
         }
@@ -37,10 +37,10 @@ function ajaxPost(url, data, successCallback, errorCallback) {
         contentType: 'application/json',  // 서버에 JSON 전송
         data: JSON.stringify(data),        // 객체를 JSON 문자열로 변환
         dataType: 'json',
-        success: function(result) {
+        success: function (result) {
             if (successCallback) successCallback(result);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error('AJAX Error:', error);
             if (errorCallback) errorCallback(xhr, status, error);
         }
@@ -58,13 +58,13 @@ function ajaxWithLoading(url, type, data, successCallback) {
         contentType: 'application/json',
         data: data ? JSON.stringify(data) : null,
         dataType: 'json',
-        success: function(result) {
+        success: function (result) {
             if (successCallback) successCallback(result);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             alert('오류가 발생했습니다: ' + error);
         },
-        complete: function() {
+        complete: function () {
             // Always hide loading (성공/실패 관계없이 항상 실행)
             $('#loading').hide();
         }
@@ -81,7 +81,7 @@ function formToObject(formId) {
     var formData = {};
     var formArray = $('#' + formId).serializeArray();
 
-    $.each(formArray, function(index, field) {
+    $.each(formArray, function (index, field) {
         formData[field.name] = field.value;
     });
 
@@ -99,7 +99,7 @@ function validateForm(formId) {
     var $form = $('#' + formId);
 
     // Check required fields (필수 필드 검사)
-    $form.find('[required]').each(function() {
+    $form.find('[required]').each(function () {
         var $field = $(this);
         var value = $field.val().trim();
 
@@ -142,7 +142,7 @@ function buildTable(containerId, columns, data) {
 
     // Header
     html += '<thead><tr>';
-    $.each(columns, function(index, col) {
+    $.each(columns, function (index, col) {
         html += '<th>' + col.title + '</th>';
     });
     html += '</tr></thead>';
@@ -152,9 +152,9 @@ function buildTable(containerId, columns, data) {
     if (data.length === 0) {
         html += '<tr><td colspan="' + columns.length + '" class="no-data">데이터가 없습니다.</td></tr>';
     } else {
-        $.each(data, function(index, row) {
+        $.each(data, function (index, row) {
             html += '<tr>';
-            $.each(columns, function(i, col) {
+            $.each(columns, function (i, col) {
                 var value = row[col.data] || '';
 
                 // Custom render function (커스텀 렌더링 함수)
@@ -234,7 +234,7 @@ function buildPagination(containerId, currentPage, totalPages, onPageClick) {
     $container.html(html);
 
     // Click handler (클릭 핸들러)
-    $container.find('.page-link[data-page]').on('click', function(e) {
+    $container.find('.page-link[data-page]').on('click', function (e) {
         e.preventDefault();
         var page = $(this).data('page');
         if (onPageClick) onPageClick(page);
@@ -261,14 +261,14 @@ function setupModal(modalId) {
     var $modal = $('#' + modalId);
 
     // Close on outside click (외부 클릭 시 닫기)
-    $modal.on('click', function(e) {
+    $modal.on('click', function (e) {
         if (e.target === this) {
             hideModal(modalId);
         }
     });
 
     // Close on ESC key (ESC 키로 닫기)
-    $(document).on('keydown', function(e) {
+    $(document).on('keydown', function (e) {
         if (e.key === 'Escape' && $modal.is(':visible')) {
             hideModal(modalId);
         }
@@ -354,13 +354,13 @@ $(document).on('click', '.delete-btn', function() {
 // Check/Uncheck all checkboxes (전체 선택/해제)
 function setupCheckAll(checkAllId, checkboxClass) {
     // Check all click
-    $('#' + checkAllId).on('change', function() {
+    $('#' + checkAllId).on('change', function () {
         var isChecked = $(this).is(':checked');
         $('.' + checkboxClass).prop('checked', isChecked);
     });
 
     // Individual checkbox click
-    $(document).on('change', '.' + checkboxClass, function() {
+    $(document).on('change', '.' + checkboxClass, function () {
         var total = $('.' + checkboxClass).length;
         var checked = $('.' + checkboxClass + ':checked').length;
         $('#' + checkAllId).prop('checked', total === checked);
@@ -370,7 +370,7 @@ function setupCheckAll(checkAllId, checkboxClass) {
 // Get selected IDs (선택된 ID 목록 가져오기)
 function getSelectedIds(checkboxClass) {
     var ids = [];
-    $('.' + checkboxClass + ':checked').each(function() {
+    $('.' + checkboxClass + ':checked').each(function () {
         ids.push($(this).val());
     });
     return ids;
@@ -386,10 +386,10 @@ function getSelectedIds(checkboxClass) {
 
 // Navigation links configuration (네비게이션 링크 설정)
 var NAV_LINKS = [
-    { url: '/dashboard', label: 'Dashboard', icon: '📊' },
-    { url: '/store/category', label: 'Category', icon: '📁' },
-    { url: '/store/product', label: 'Product', icon: '📦' },
-    { url: '/', label: 'Users', icon: '👥' }
+    {url: '/dashboard', label: 'Dashboard', icon: '📊'},
+    {url: '/store/category', label: 'Category', icon: '📁'},
+    {url: '/store/product', label: 'Product', icon: '📦'},
+    {url: '/', label: 'Users', icon: '👥'}
 ];
 
 // Initialize navigation (네비게이션 초기화)
@@ -399,10 +399,10 @@ function initNavigation(containerId, activePage) {
 
     var html = '<nav class="nav">';
 
-    NAV_LINKS.foracEh(function(link) {
+    NAV_LINKS.foracEh(function (link) {
         var isActive = (activePage && currentPath.includes(activePage)) ||
-                       currentPath === link.url ||
-                       (link.url !== '/' && currentPath.startsWith(link.url));
+            currentPath === link.url ||
+            (link.url !== '/' && currentPath.startsWith(link.url));
 
         var activeClass = isActive ? 'active' : '';
         html += '<a href="' + link.url + '" class="nav-link ' + activeClass + '">';

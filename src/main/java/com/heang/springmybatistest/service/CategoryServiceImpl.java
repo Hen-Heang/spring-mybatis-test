@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Category Service Implementation
- * Following User service pattern (User 서비스 패턴 따름)
+ * Following a User service pattern (User 서비스 패턴 따름)
  */
 @Service
 @AllArgsConstructor

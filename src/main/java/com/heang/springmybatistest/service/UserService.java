@@ -9,7 +9,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 public interface UserService {
-    void createuser(@Valid UserRequest userRequest);
+    void createUser(@Valid UserRequest userRequest);
 
     List<UserResponse> getAllUsers();
 

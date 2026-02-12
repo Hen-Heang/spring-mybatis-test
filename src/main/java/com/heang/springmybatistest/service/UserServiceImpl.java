@@ -8,30 +8,29 @@ import com.heang.springmybatistest.mapper.UserDtoMapper;
 import com.heang.springmybatistest.mapper.UserMapper;
 import com.heang.springmybatistest.model.Users;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
-
 public class UserServiceImpl implements  UserService {
 
     private final UserMapper userMapper;
     private final UserDtoMapper userDtoMapper;
-    private final PasswordEncoder passwordEncoder;
+
+
+    public UserServiceImpl(UserMapper userMapper, UserDtoMapper userDtoMapper) {
+        this.userMapper = userMapper;
+        this.userDtoMapper = userDtoMapper;
+    }
 
 
     @Override
-    public void createuser(UserRequest userRequest) {
+    public void createUser(UserRequest userRequest) {
         if (userRequest.getStatus() != null && !userRequest.getStatus().isBlank()) {
             userRequest.setStatus(userRequest.getStatus().toUpperCase());
         } else {
             userRequest.setStatus(null);
         }
-        String encodedPassword = passwordEncoder.encode(userRequest.getPassword());
-        userRequest.setPassword(encodedPassword);
         userMapper.insertUser(userRequest);
     }
 

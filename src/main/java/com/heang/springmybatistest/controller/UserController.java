@@ -24,7 +24,7 @@ public class UserController {
             @Valid @RequestBody UserRequest userRequest
             ) {
 
-        userService.createuser(userRequest);
+        userService.createUser(userRequest);
         return ApiResponse.success(null);
     }
 
