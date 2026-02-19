@@ -21,6 +21,10 @@
 
     </resultMap>
 
+    <sql id="UserColumns">
+        id, username, email, password, name, phone, role, status, created_at, updated_at
+    </sql>
+
     <!-- ===================================
          기존 CRUD 쿼리
          =================================== -->
@@ -50,7 +54,7 @@
     <!-- SELECT ALL -->
     <select id="selectUserList" resultMap="UserMap">
         SELECT
-            id, username, email, password, name, phone, role, status, created_at, updated_at
+            <include refid="UserColumns"/>
         FROM users
         ORDER BY id DESC
     </select>
@@ -58,9 +62,102 @@
     <!-- SELECT BY ID -->
     <select id="selectUserById" parameterType="long" resultMap="UserMap">
         SELECT
-            id, username, email, password, name, phone, role, status, created_at, updated_at
+            <include refid="UserColumns"/>
         FROM users
         WHERE id = #{id}
+    </select>
+
+    <!-- SEARCH + PAGINATION -->
+    <select id="searchUsers" parameterType="com.heang.springmybatistest.dto.UserSearchRequest" resultMap="UserMap">
+        SELECT
+            <include refid="UserColumns"/>
+        FROM users
+        <where>
+            <if test="username != null and username != ''">
+                AND username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="email != null and email != ''">
+                AND email LIKE CONCAT('%', #{email}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (username LIKE CONCAT('%', #{keyword}, '%')
+                OR email LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="ids != null and ids.size() > 0">
+                AND id IN
+                <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="statuses != null and statuses.size() > 0">
+                AND status IN
+                <foreach collection="statuses" item="st" open="(" close=")" separator=",">
+                    #{st}
+                </foreach>
+            </if>
+            <if test="startDate != null">
+                AND created_at &gt;= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND created_at &lt;= #{endDate}
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="sortBy == 'username'">username</when>
+            <when test="sortBy == 'email'">email</when>
+            <when test="sortBy == 'createdAt'">created_at</when>
+            <when test="sortBy == 'status'">status</when>
+            <otherwise>id</otherwise>
+        </choose>
+        <choose>
+            <when test="sortOrder == 'ASC'">ASC</when>
+            <otherwise>DESC</otherwise>
+        </choose>
+        <if test="size != null and offset != null">
+            LIMIT #{size} OFFSET #{offset}
+        </if>
+    </select>
+
+    <select id="countUsers" parameterType="com.heang.springmybatistest.dto.UserSearchRequest" resultType="int">
+        SELECT COUNT(*)
+        FROM users
+        <where>
+            <if test="username != null and username != ''">
+                AND username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="email != null and email != ''">
+                AND email LIKE CONCAT('%', #{email}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (username LIKE CONCAT('%', #{keyword}, '%')
+                OR email LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="ids != null and ids.size() > 0">
+                AND id IN
+                <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="statuses != null and statuses.size() > 0">
+                AND status IN
+                <foreach collection="statuses" item="st" open="(" close=")" separator=",">
+                    #{st}
+                </foreach>
+            </if>
+            <if test="startDate != null">
+                AND created_at &gt;= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND created_at &lt;= #{endDate}
+            </if>
+        </where>
     </select>
 
     <!-- UPDATE -->

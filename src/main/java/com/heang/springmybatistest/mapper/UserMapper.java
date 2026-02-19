@@ -1,6 +1,7 @@
 package com.heang.springmybatistest.mapper;
 
 import com.heang.springmybatistest.dto.UserRequest;
+import com.heang.springmybatistest.dto.UserSearchRequest;
 import com.heang.springmybatistest.dto.UserUpdateRequest;
 import com.heang.springmybatistest.model.Users;
 import org.apache.ibatis.annotations.Mapper;
@@ -26,6 +27,10 @@ public interface UserMapper {
     Users selectUserById(Long id);
 
     void deleteUser(Long id);
+
+    List<Users> searchUsers(UserSearchRequest request);
+
+    int countUsers(UserSearchRequest request);
 
     // ===== Spring Security 관련 메서드 =====
 

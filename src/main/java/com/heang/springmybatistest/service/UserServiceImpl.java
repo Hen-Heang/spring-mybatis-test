@@ -1,8 +1,10 @@
 package com.heang.springmybatistest.service;
 
 
+import com.heang.springmybatistest.dto.UserListResponse;
 import com.heang.springmybatistest.dto.UserRequest;
 import com.heang.springmybatistest.dto.UserResponse;
+import com.heang.springmybatistest.dto.UserSearchRequest;
 import com.heang.springmybatistest.dto.UserUpdateRequest;
 import com.heang.springmybatistest.mapper.UserDtoMapper;
 import com.heang.springmybatistest.mapper.UserMapper;
@@ -35,9 +37,15 @@ public class UserServiceImpl implements  UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUsers() {
-        List<Users> users = userMapper.selectUserList();
-        return userDtoMapper.toUserResponseList(users);
+    public UserListResponse searchUsers(UserSearchRequest request) {
+        normalizeSearchRequest(request);
+        List<Users> users = userMapper.searchUsers(request);
+        int total = userMapper.countUsers(request);
+
+        List<UserResponse> responses = userDtoMapper.toUserResponseList(users);
+        int page = request.getPage() != null ? request.getPage() : 1;
+        int size = request.getSize() != null ? request.getSize() : users.size();
+        return new UserListResponse(responses, total, page, size);
     }
 
     @Override
@@ -78,5 +86,23 @@ public class UserServiceImpl implements  UserService {
 
         }
         userMapper.deleteUser(id);
+    }
+
+    private void normalizeSearchRequest(UserSearchRequest request) {
+        if (request == null) {
+            return;
+        }
+        if (request.getStatus() != null && !request.getStatus().isBlank()) {
+            request.setStatus(request.getStatus().toUpperCase());
+        }
+        if (request.getKeyword() != null && request.getKeyword().isBlank()) {
+            request.setKeyword(null);
+        }
+        if (request.getUsername() != null && request.getUsername().isBlank()) {
+            request.setUsername(null);
+        }
+        if (request.getEmail() != null && request.getEmail().isBlank()) {
+            request.setEmail(null);
+        }
     }
 }

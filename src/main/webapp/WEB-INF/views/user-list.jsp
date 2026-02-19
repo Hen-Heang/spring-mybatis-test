@@ -89,7 +89,7 @@
         <div id="usersTableContainer">
             <div class="loading">Loading users...</div>
         </div>
-
+        <div id="pagination" class="pagination"></div>
 
         <!-- View User Modal (사용자 상세 보기 모달) -->
         <div id="viewModal" class="modal-overlay">
@@ -152,13 +152,20 @@
             </div>
         </div>
 
+        <script>
+            window.APP_CONTEXT = '${pageContext.request.contextPath}';
+        </script>
         <!-- External JavaScript -->
-        <script src="${pageContext.request.contextPath}/js/user-api.js"></script>
+        <script src="${pageContext.request.contextPath}/js/user-api.js?v=20260219"></script>
 
         <!-- Page-specific JavaScript using jQuery -->
         <script>
             // Store all users data (사용자 데이터 저장)
             let allUsers = [];
+            let currentPage = 1;
+            let pageSize = 10;
+            let totalCount = 0;
+            let currentQuery = {};
 
             /* ============================================
                DOCUMENT READY - 페이지 로드 시 실행
@@ -175,20 +182,32 @@
             /* ============================================
                LOAD & DISPLAY USERS (사용자 조회 및 표시)
                ============================================ */
-            function loadUsers() {
+            function loadUsers(page) {
+                currentPage = page || 1;
+
+                const params = Object.assign({}, currentQuery, {
+                    page: currentPage,
+                    size: pageSize
+                });
                 // Call API using jQuery AJAX
                 UserAPI.getAll(
+                    params,
                     // Success callback (성공 시 콜백)
                     function (result) {
-                        if (result.data && result.data.length > 0) {
-                            allUsers = result.data;
-                            renderUsersTable(allUsers);
-                            updateStats(allUsers);
-                        } else {
-                            allUsers = [];
-                            renderUsersTable([]);  // Show a table with a "No Data" message
-                            updateStats([]);
-                        }
+                        const data = result.data;
+                        const users = Array.isArray(data)
+                            ? data
+                            : (data && data.users) ? data.users : [];
+                        allUsers = users;
+                        totalCount = (data && data.total != null) ? data.total : users.length;
+
+                        renderUsersTable(users);
+                        updateStats(users, totalCount);
+                        renderPagination(
+                            totalCount,
+                            (data && data.page) || currentPage,
+                            (data && data.size) || pageSize
+                        );
                     },
                     // Error callback (에러 시 콜백)
                     function (xhr, status, error) {
@@ -200,8 +219,8 @@
             }
 
             // Update statistics (통계 업데이트)
-            function updateStats(users) {
-                $('#totalUsers').text(users.length);
+            function updateStats(users, total) {
+                $('#totalUsers').text(total);
                 $('#activeUsers').text(users.filter(function (u) {
                     return u.status === 'ACTIVE';
                 }).length);
@@ -313,7 +332,7 @@
                     function (result) {
                         alert('User updated successfully!');
                         closeEditModal();
-                        loadUsers(); // Reload table
+                        loadUsers(currentPage); // Reload table
                     },
                     // Error callback
                     function (xhr, status, error) {
@@ -335,7 +354,7 @@
                     // Success callback
                     function (result) {
                         alert('User deleted successfully!');
-                        loadUsers(); // Reload table
+                        loadUsers(currentPage); // Reload table
                     },
                     // Error callback
                     function (xhr, status, error) {
@@ -349,49 +368,53 @@
                ============================================ */
             function searchUsers() {
                 const searchType = $('#searchType').val();
-                const keyword = $('#searchKeyword').val().trim().toLowerCase();
+                const keyword = $('#searchKeyword').val().trim();
 
-                // If no keyword, show all users
-                if (!keyword) {
-                    renderUsersTable(allUsers);
-                    updateStats(allUsers);
-                    return;
+                currentQuery = {};
+                if (keyword) {
+                    if (searchType === 'username') {
+                        currentQuery.username = keyword;
+                    } else if (searchType === 'email') {
+                        currentQuery.email = keyword;
+                    } else {
+                        currentQuery.keyword = keyword;
+                    }
                 }
 
-                // Filter users based on a search type
-                const filteredUsers = allUsers.filter(function (user) {
-                    if (searchType === 'username') {
-                        // Search by username only (이름으로만 검색)
-                        return user.username && user.username.toLowerCase().indexOf(keyword) !== -1;
-                    } else if (searchType === 'email') {
-                        // Search by email only (이메일로만 검색)
-                        return user.email && user.email.toLowerCase().indexOf(keyword) !== -1;
-                    } else {
-                        // Search by all (전체 검색) - username OR email
-                        const matchUsername = user.username && user.username.toLowerCase().indexOf(keyword) !== -1;
-                        const matchEmail = user.email && user.email.toLowerCase().indexOf(keyword) !== -1;
-                        return matchUsername || matchEmail;
-                    }
-                });
-
-                // Display filtered results
-                renderUsersTable(filteredUsers);
-
-                // Update stats with filtered count
-                updateSearchStats(filteredUsers.length, allUsers.length);
+                loadUsers(1);
             }
 
-            // Update stats to show search results count (검색 결과 카운트 표시)
-            function updateSearchStats(filteredCount, totalCount) {
-                $('#totalUsers').html(filteredCount + ' <small style="font-size:0.5em; color:#666;">/ ' + totalCount + '</small>');
-            }
-
-            // Reset search (검색 초기화)
+            // Reset search (reset filters)
             function resetSearch() {
                 $('#searchKeyword').val('');
                 $('#searchType').val('all');
-                renderUsersTable(allUsers);
-                updateStats(allUsers);
+                currentQuery = {};
+                loadUsers(1);
+            }
+
+            function renderPagination(total, page, size) {
+                const $pagination = $('#pagination');
+                const totalPages = Math.ceil(total / size);
+
+                if (!totalPages || totalPages <= 1) {
+                    $pagination.html('');
+                    return;
+                }
+
+                const prevDisabled = page <= 1 ? 'disabled' : '';
+                const nextDisabled = page >= totalPages ? 'disabled' : '';
+
+                let html = '';
+                html += '<button class="btn btn-sm btn-secondary" ' + prevDisabled + ' onclick="goToPage(' + (page - 1) + ')">Prev</button>';
+                html += '<span class="page-info">Page ' + page + '/ ' + totalPages + '</span>';
+                html += '<button class="btn btn-sm btn-secondary" ' + nextDisabled + ' onclick="goToPage(' + (page + 1) + ')">Next</button>';
+
+                $pagination.html(html);
+            }
+
+            function goToPage(page) {
+                if (page < 1) return;
+                loadUsers(page);
             }
 
             // Search on Enter key (엔터키로 검색)

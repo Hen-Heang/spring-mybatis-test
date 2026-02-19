@@ -164,28 +164,27 @@
 </div>
 
 <script>
-    // Fetch counts from API - API returns { status: {...}, data: [...] }
+    function setCount(elementId, data) {
+        const list = Array.isArray(data)
+            ? data
+            : (data && Array.isArray(data.users)) ? data.users : [];
+        document.getElementById(elementId).textContent = list.length;
+    }
+
+    // Fetch counts from API
     fetch('/api/categories')
         .then(r => r.json())
-        .then(response => {
-            const data = response.data || response;
-            document.getElementById('categoryCount').textContent = Array.isArray(data) ? data.length : '-';
-        })
+        .then(response => setCount('categoryCount', response.data || response))
         .catch(() => document.getElementById('categoryCount').textContent = '0');
 
     fetch('/api/products')
-        .then(response => {
-            const data = response.data || response;
-            document.getElementById('productCount').textContent = Array.isArray(data) ? data.length : '-';
-        })
+        .then(r => r.json())
+        .then(response => setCount('productCount', response.data || response))
         .catch(() => document.getElementById('productCount').textContent = '0');
 
     fetch('/users')
         .then(r => r.json())
-        .then(response => {
-            const data = response.data || response;
-            document.getElementById('userCount').textContent = Array.isArray(data) ? data.length : '-';
-        })
+        .then(response => setCount('userCount', response.data || response))
         .catch(() => document.getElementById('userCount').textContent = '0');
 </script>
 </body>

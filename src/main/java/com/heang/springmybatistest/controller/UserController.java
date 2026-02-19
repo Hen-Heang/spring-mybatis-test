@@ -1,14 +1,15 @@
 package com.heang.springmybatistest.controller;
 
 import com.heang.springmybatistest.common.api.ApiResponse;
+import com.heang.springmybatistest.dto.UserListResponse;
 import com.heang.springmybatistest.dto.UserRequest;
 import com.heang.springmybatistest.dto.UserResponse;
+import com.heang.springmybatistest.dto.UserSearchRequest;
 import com.heang.springmybatistest.dto.UserUpdateRequest;
 import com.heang.springmybatistest.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -30,9 +31,9 @@ public class UserController {
 
 //    Get All Users
     @GetMapping
-    public ApiResponse<List<UserResponse>> getUserList() {
-        List<UserResponse> users = userService.getAllUsers();
-        return ApiResponse.success(users);
+    public ApiResponse<UserListResponse> getUserList(UserSearchRequest request) {
+        UserListResponse result = userService.searchUsers(request);
+        return ApiResponse.success(result);
     }
 
     @PutMapping("/{id}")

@@ -17,17 +17,23 @@
 const UserAPI = {
 
     // Base URL for user endpoints (maps to UserController)
-    baseUrl: '/users',
+    baseUrl: (window.APP_CONTEXT || '') + '/users',
 
     /* ----------------------------------------
        GET ALL USERS (모든 사용자 조회)
        HTTP: GET /users
        Backend: UserController.getUserList()
        ---------------------------------------- */
-    getAll: function (successCallback, errorCallback) {
+    getAll: function (params, successCallback, errorCallback) {
+        if (typeof params === 'function') {
+            errorCallback = successCallback;
+            successCallback = params;
+            params = {};
+        }
         $.ajax({
             url: this.baseUrl,          // Request URL
             type: 'GET',                // HTTP Method
+            data: params,
             dataType: 'json',           // Expected response type
             success: function (result) {
                 console.log('API Response:', result);
