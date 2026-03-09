@@ -1,4 +1,4 @@
-# 🚀 Spring MyBatis Test Project
+# Spring MyBatis Test Project
 
 > 한국 기업 프로젝트 표준 스택으로 배우는 웹 개발  
 > Learning Web Development with Korean Enterprise Standard Stack
@@ -38,6 +38,20 @@ This stack is commonly used in:
 - 🏛️ Korean Government Projects (전자정부 표준프레임워크)
 - 🏢 Large Enterprise SI Projects (삼성SDS, LG CNS, SK C&C)
 - 🏦 Financial Systems (Banks, Insurance)
+
+---
+
+## 🗓 Today Updates
+
+### 2026-03-09
+- Fixed the `Cannot resolve symbol 'AutoConfigureMockMvc'` issue for Spring Boot 4.
+- Added `spring-boot-starter-webmvc-test` as a test dependency in `pom.xml`.
+- Updated the test import to `org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc`.
+- Verified test source compilation after correcting the Maven/JDK execution setup.
+
+### IDE Note
+- Set `JAVA_HOME` to the JDK root directory, not the `bin` directory.
+- Example: `C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot`
 
 ---
 
@@ -1538,4 +1552,4 @@ Created for learning Korean Enterprise Web Development Stack.
 
 ---
 
-*Last Updated: 2026-02-03*
+*Last Updated: 2026-03-09*
