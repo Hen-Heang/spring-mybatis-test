@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c"   uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt"  %>
+<%@ taglib prefix="fn"  uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -54,10 +54,7 @@
     </tr>
     <tr>
         <th>Date (등록일시)</th>
-        <td>
-            <fmt:formatDate value="${board.dataRegDt}"
-                            pattern="yyyy-MM-dd HH:mm:ss"/>
-        </td>
+        <td>${fn:substring(board.dataRegDt, 0, 19)}</td>
     </tr>
 </table>
 

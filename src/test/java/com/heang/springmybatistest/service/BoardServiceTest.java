@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
  * @ExtendWith(MockitoExtension.class) → enables Mockito
  * @Mock    → creates a fake BoardDAO (no real DB needed)
  * @InjectMocks → creates BoardServiceImpl and injects the fake DAO
- *
+ * <p>
  * Why mock the DAO?
  * Service tests should only test business logic — not SQL
  * Mocking makes tests fast and isolated

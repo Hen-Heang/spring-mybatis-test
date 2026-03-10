@@ -13,7 +13,7 @@
         ResultMap: Maps DB columns (snake_case) → Java fields (camelCase)
         DB 컬럼(snake_case) → Java 필드(camelCase) 매핑
     -->
-    <resultMap id="BoardResultMap" type="com.heang.springmybatistest.model.Board">
+    <resultMap id="BoardResultMap" type="com.heang.springmybatistest.vo.BoardVO">
         <id     column="board_sn"    property="boardSn"    />  <!-- PK -->
         <result column="board_title" property="boardTitle"  />
         <result column="board_cn"    property="boardCn"     />
@@ -91,7 +91,7 @@
         data_reg_dt not included → DB handles it with DEFAULT NOW()
         id="insert" must match: void insert(Board board) in BoardMapper.java
     -->
-    <insert id="insert" parameterType="com.heang.springmybatistest.model.Board"
+    <insert id="insert" parameterType="com.heang.springmybatistest.vo.BoardVO"
             useGeneratedKeys="true" keyProperty="boardSn">
         INSERT INTO co_smp_board_m (
             board_title,
@@ -114,7 +114,7 @@
 
         id="update" must match: int update(Board board) in BoardMapper.java
     -->
-    <update id="update" parameterType="com.heang.springmybatistest.model.Board">
+    <update id="update" parameterType="com.heang.springmybatistest.vo.BoardVO">
         UPDATE co_smp_board_m
         SET
             board_title = #{boardTitle},

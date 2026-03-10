@@ -28,17 +28,22 @@ java --enable-native-access=ALL-UNNAMED -jar target/spring-mybatis-test-0.0.1-SN
 ## Local Dev URLs
 - http://localhost:8080/ — Create user form
 - http://localhost:8080/user-list — User list
-- http://localhost:8080/dashboard — Dashboard
+- http://localhost:8080/dashboard — Dashboard (links to all modules)
+- http://localhost:8080/board/list.do — Board list (← Dashboard button included)
+- http://localhost:8080/board/insertForm.do — New board post form
+- http://localhost:8080/board/detail.do?boardSn={id} — Board detail + edit
 - http://localhost:8080/store/category — Category management
 - http://localhost:8080/store/product — Product management
 - http://localhost:8080/swagger-ui.html — Swagger API docs
 
 ## Package Structure
 `com.heang.springmybatistest`
-- `controller/` — REST controllers + JSP view controllers
+- `controller/` — REST controllers + JSP view controllers (`BoardMvcController`, `BoardApiController`, `UserController`, `ViewController`)
+- `dao/` — Pattern A DAO: `BoardDAO` using `SqlSessionTemplate`
 - `service/` — Business logic (interface + impl pattern)
-- `mapper/` — MyBatis mapper interfaces
-- `model/` — Entities (Users, Category, Product)
+- `mapper/` — MyBatis mapper interfaces (`BoardMapper`, `UserMapper`)
+- `model/` — Entities (Board, Users, Category, Product)
+- `vo/` — View Objects: `BoardVO` (used by DAO + Service + Controller)
 - `dto/` — Request/Response DTOs
 - `exception/` — Custom exceptions + GlobalExceptionHandler
 - `common/` — ApiResponse wrapper, Pagination, utils
@@ -46,6 +51,7 @@ java --enable-native-access=ALL-UNNAMED -jar target/spring-mybatis-test-0.0.1-SN
 
 ## SQL Mapper Files
 Located in `src/main/resources/mapper/`:
+- `BoardMapper.xml` — resultMap type = `BoardVO`, CRUD + soft delete
 - `UserMapper.xml`
 - `CategoryMapper.xml`
 - `ProductMapper.xml`
@@ -53,6 +59,7 @@ Located in `src/main/resources/mapper/`:
 
 ## Database Tables
 - `users` — id, username, email, password, name, phone, role, status, created_at, updated_at
+- `co_smp_board_m` — board_sn (PK), board_title, board_cn, use_yn, data_reg_dt
 - `category` — id, name, created_at
 - `product` — id, name, price, stock, category_id (FK → category), created_at
 
@@ -86,7 +93,7 @@ throw new ConflictException("...");
 |----------|---------|-------|
 | `SPRING_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/testdb` | |
 | `SPRING_DATASOURCE_USERNAME` | `postgres` | |
-| `SPRING_DATASOURCE_PASSWORD` | `postgres` | |
+| `SPRING_DATASOURCE_PASSWORD` | `123` | Local default |
 | `PORT` | `8080` | |
 | `JWT_SECRET` | `change-me-in-production` | |
 | `SPRING_MAIL_USERNAME` | _(empty)_ | Gmail |

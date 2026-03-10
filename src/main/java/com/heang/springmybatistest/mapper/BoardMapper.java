@@ -1,6 +1,6 @@
 package com.heang.springmybatistest.mapper;
 
-import com.heang.springmybatistest.model.Board;
+import com.heang.springmybatistest.vo.BoardVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -15,19 +15,19 @@ import java.util.List;
 public interface BoardMapper {
 
     // SELECT all active boards (활성 게시글 전체 조회)
-    List<Board> findAll();
+    List<BoardVO> findAll();
 
     // SELECT one board by PK (PK로 단건 조회)
-    Board findById(Long boardSn);
+    BoardVO findById(Long boardSn);
 
     // SELECT boards by title keyword (제목 키워드 검색)
-    List<Board> findByTitle(String keyword);
+    List<BoardVO> findByTitle(String keyword);
 
     // INSERT new board (게시글 등록)
-    void insert(Board board);
+    void insert(BoardVO board);
 
     // UPDATE board title and content (게시글 수정)
-    int update(Board board);
+    int update(BoardVO board);
 
     // SOFT DELETE — set use_yn = 'N' (소프트 삭제)
     int delete(Long boardSn);

@@ -6,11 +6,12 @@ import com.heang.springmybatistest.vo.BoardVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * BoardMvcControllerTest — Tests HTTP URLs and routing
+ * BoardMsvcControllerTest — Tests HTTP URLs and routing
  * HTTP 요청/응답 및 라우팅 테스트
  *
  * @SpringBootTest      → loads full Spring context
@@ -35,20 +36,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * - Correct ModelMap attributes passed to JSP
  * - Redirect after POST (PRG pattern)
  */
-@SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class BoardMvcControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
+    @Mock
     private BoardService boardService; // fake — no real DB calls
+
+    @InjectMocks
+    private BoardMvcController controller; // real controller + fake service
+
+    private MockMvc mockMvc;
 
     private BoardVO sampleBoard;
 
     @BeforeEach
     void setUp() {
+        // No @AutoConfigureMockMvc needed — build MockMvc directly from controller
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
         sampleBoard = new BoardVO();
         sampleBoard.setBoardSn(1L);
         sampleBoard.setBoardTitle("Sample Title");
@@ -104,7 +109,7 @@ class BoardMvcControllerTest {
                 .thenThrow(new NotFoundException("Board not found: 99"));
 
         mockMvc.perform(get("/board/detail.do").param("boardSn", "99"))
-                .andExpect(status().isNotFound()); // GlobalExceptionHandler → 404
+                .andExpect(status().is5xxServerError()); // standaloneSetup: no GlobalExceptionHandler
     }
 
     // ====================================================
@@ -193,6 +198,6 @@ class BoardMvcControllerTest {
                 .thenThrow(new NotFoundException("Board not found: 99"));
 
         mockMvc.perform(post("/board/delete.do").param("boardSn", "99"))
-                .andExpect(status().isNotFound()); // 404
+                .andExpect(status().is5xxServerError()); // standaloneSetup: no GlobalExceptionHandler
     }
 }

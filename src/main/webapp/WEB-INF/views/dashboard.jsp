@@ -127,6 +127,7 @@
             <a href="${pageContext.request.contextPath}/store/category" class="nav-link">Category</a>
             <a href="${pageContext.request.contextPath}/store/product" class="nav-link">Product</a>
             <a href="${pageContext.request.contextPath}/" class="nav-link">Users</a>
+            <a href="${pageContext.request.contextPath}/board/list.do" class="nav-link">Board</a>
         </nav>
     </header>
 
@@ -159,6 +160,13 @@
                 <div class="dashboard-card-count" id="userCount">-</div>
                 <div class="dashboard-card-desc">Manage users</div>
             </a>
+
+            <a href="${pageContext.request.contextPath}/board/list.do" class="dashboard-card">
+                <div class="dashboard-card-icon">📝</div>
+                <div class="dashboard-card-title">Board</div>
+                <div class="dashboard-card-count" id="boardCount">-</div>
+                <div class="dashboard-card-desc">Korean MVC .do style board</div>
+            </a>
         </div>
     </main>
 </div>
@@ -186,6 +194,11 @@
         .then(r => r.json())
         .then(response => setCount('userCount', response.data || response))
         .catch(() => document.getElementById('userCount').textContent = '0');
+
+    fetch('/api/board')
+        .then(r => r.json())
+        .then(response => setCount('boardCount', response.data || response))
+        .catch(() => document.getElementById('boardCount').textContent = '0');
 </script>
 </body>
 </html>

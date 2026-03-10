@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c"   uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt"  %>
+<%@ taglib prefix="fn"  uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -30,22 +30,26 @@
      ==================================================== --%>
 <div class="search-form">
     <form id="searchForm" method="get" action="/board/list.do">
-        <input type="text"
-               id="keyword"
-               name="keyword"
-               value="<c:out value='${param.keyword}'/>"
-               placeholder="Search title... (제목 검색)" />
+        <label for="keyword"></label><input type="text"
+                                            id="keyword"
+                                            name="keyword"
+                                            value="<c:out value='${param.keyword}'/>"
+                                            placeholder="Search title... (제목 검색)" />
         <button type="submit" class="btn btn-primary">Search</button>
         <button type="button" class="btn" onclick="clearSearch()">Clear</button>
         <span id="keywordError" class="error-msg">Please enter a keyword</span>
     </form>
 </div>
 
-<%-- Write button --%>
+<%-- Write button + Back to Dashboard --%>
 <div style="margin-bottom:10px;">
     <button class="btn btn-primary"
             onclick="location.href='/board/insertForm.do'">
         Write (등록)
+    </button>
+    <button class="btn"
+            onclick="location.href='/dashboard'">
+        ← Dashboard
     </button>
 </div>
 
@@ -92,11 +96,8 @@
                     </c:choose>
                 </td>
 
-                <%-- fmt:formatDate = format timestamp --%>
-                <td>
-                    <fmt:formatDate value="${board.dataRegDt}"
-                                    pattern="yyyy-MM-dd HH:mm"/>
-                </td>
+                <%-- LocalDateTime → toString gives "2026-03-10T10:28:50" → show first 16 chars --%>
+                <td>${fn:substring(board.dataRegDt, 0, 16)}</td>
 
                 <td>
                     <button class="btn"
@@ -146,7 +147,7 @@
 
     // Validate search before submit
     $('#searchForm').on('submit', function() {
-        var keyword = $('#keyword').val().trim();
+        const keyword = $('#keyword').val().trim();
         if (keyword === '') {
             $('#keywordError').show();
             setTimeout(function() { $('#keywordError').hide(); }, 2000);
