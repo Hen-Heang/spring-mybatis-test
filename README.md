@@ -1185,6 +1185,35 @@ mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
 
 ---
 
+### 🧪 Practice Endpoints & Checklist
+
+Start the app (`./mvnw spring-boot:run`) then test with Postman or curl:
+
+| Exercise | Tag | Endpoint |
+|----------|-----|----------|
+| Conditional filter | `<if>` | `GET /api/practice/search/if?username=john&status=ACTIVE` |
+| Dynamic sorting | `<choose>` | `GET /api/practice/search/choose?sortBy=username&sortOrder=ASC` |
+| IN clause | `<foreach>` | `GET /api/practice/users/by-ids?ids=1,2,3` |
+| Multiple statuses | `<foreach>` | `GET /api/practice/users/by-statuses?statuses=ACTIVE,INACTIVE` |
+| Batch INSERT | `<foreach>` | `POST /api/practice/users/batch` |
+| Batch UPDATE | `<foreach>` | `PUT /api/practice/users/batch-status` |
+| Batch DELETE | `<foreach>` | `DELETE /api/practice/users/batch?ids=10,11,12` |
+| Dynamic UPDATE | `<set>` | `PATCH /api/practice/users/{id}` |
+| Advanced search | All combined | `POST /api/practice/search/advanced` |
+
+**Practice Checklist:**
+- [ ] Test `<if>` with different filter combinations
+- [ ] Test `<choose>` with different sort options
+- [ ] Test `<foreach>` with IN clause
+- [ ] Test batch INSERT with JSON array
+- [ ] Test batch UPDATE status
+- [ ] Test batch DELETE
+- [ ] Test `<set>` with partial updates
+- [ ] Test advanced search with pagination
+- [ ] Enable SQL logging and observe generated SQL
+
+---
+
 ## 📚 Learning Roadmap
 
 ### Why This Stack? (왜 이 기술 스택인가?)
